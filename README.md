@@ -6,11 +6,11 @@ Task Distributor is an app for flexible tasks management. The app knows which ta
 
 ## Contents:
 
-1. [History](#history-)
-2. [App overview](#app-overview)
-3. [Interface](#interface-)
-4. [Details](#details-)
-5. [Other](#other-)
+### 1. [History](#history-)
+### 2. [App overview](#app-overview)
+### 3. [Interface](#interface-)
+### 4. [Details](#details-)
+### 5. [Other](#other-)
 
 ## History:
 
