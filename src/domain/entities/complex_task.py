@@ -14,4 +14,3 @@ class ComplexTask(CommonTask):
 
     def calculate_estimation(self):
         """ Method to calculate real estimation. Returns remainder. """
-        pass

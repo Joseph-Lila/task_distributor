@@ -9,7 +9,6 @@ from src.domain.entities.base_entity import BaseEntity
 class BaseTask(BaseEntity):
     """ Base Task entity """
 
-    start: datetime.datetime
     deadline: datetime.datetime
     title: str
     description: str

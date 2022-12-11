@@ -1,0 +1,6 @@
+""" Module tests.unit """
+import pytest
+
+
+def test_me():
+    assert 1 == 1
