@@ -12472,7 +12472,7 @@
 											"top": 244,
 											"width": 98.63623046875,
 											"height": 13,
-											"text": "+when: str",
+											"text": "+when: datetime",
 											"horizontalAlignment": 0
 										},
 										{
@@ -13538,7 +13538,7 @@
 								"$ref": "AAAAAAGFALLpV56ubrc="
 							},
 							"name": "when",
-							"type": "str"
+							"type": "datetime"
 						},
 						{
 							"_type": "UMLAttribute",
