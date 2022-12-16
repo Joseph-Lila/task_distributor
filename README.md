@@ -50,9 +50,8 @@ There are 6 kinds of tasks:
 3. Negative (not to do till any moment of time)
 4. negative + with period
 5. complex: consists of units (like a book with chapters). Every unit has n other units
-(like pages in chapter of book). Each type of low units has default time estimation (like 1 page = 1 min)
-after high unit is done the whole task time estimation = prev estimation - completed unit estimation...
-6. special: it is important to complete it right now. 
+(like pages in chapter of book)
+6. special: it is important to complete it right now 
 
 No notifications: I love freedom and don't want to see notifications each time.
 If I don't complete a task in time it turns into freeze status. Also if there is less than 20% of 100% time for task
@@ -63,4 +62,4 @@ completion it also turns into freeze status.
 ***This project is for education.
 If you want to help me, feel free to ask me about donation.***
 
-> Tags: python, planning, kivy, mongodb, tdd, eda, education
+> Tags: python, planning, kivy, sqlite (async), tdd, eda, education

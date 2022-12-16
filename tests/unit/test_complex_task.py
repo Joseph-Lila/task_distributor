@@ -2,5 +2,6 @@
 import pytest
 
 
-def test_me():
+@pytest.mark.asyncio
+async def test_me():
     assert 1 == 1
