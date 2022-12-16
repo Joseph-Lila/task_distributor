@@ -1,26 +1,33 @@
+""" Module src.unit_of_work """
 import abc
-
-from src.adapters.repositories.sql_alchemy_repositories.common_task_repository import CommonTaskRepository
 
 
 class AbstractUnitOfWork(abc.ABC):
-    common_tasks: CommonTaskRepository
+    """
+    Abstract class for `unit of work` realizations.
+    """
 
-    def __enter__(self):
+    async def __aenter__(self):
         return self
 
-    def __exit__(self, *args):
-        self.rollback()
+    async def __aexit__(self, *args):
+        await self.rollback()
 
-    def commit(self):
-        self._commit()
+    async def commit(self):
+        """
+        Method to confirm changes
+        :return:
+        """
+        await self._commit()
 
     @abc.abstractmethod
-    def _commit(self):
+    async def _commit(self):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def rollback(self):
+    async def rollback(self):
+        """
+        Method to rollback changes
+        :return:
+        """
         raise NotImplementedError
-
-

@@ -2,7 +2,7 @@ isort:
 	isort src/ tests/
 
 test:
-	pytest tests/
+	pytest tests/ --asyncio-mode=strict
 
 lint:
 	pylint src/
