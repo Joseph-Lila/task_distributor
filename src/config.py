@@ -11,7 +11,4 @@ def get_sqlite_connection_str():
     :return: pathlib.Path
     """
     db_path = ROOT_DIR / 'assets' / 'databases' / 'sqlite.db'
-    if db_path.exists():
-        return str(db_path)
-    else:
-        return ':memory:'
+    return str(db_path)
