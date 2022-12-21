@@ -12,3 +12,4 @@ class Record(BaseEntity):
     what: str
     when: datetime.datetime
     how_much: float
+    register_id: int

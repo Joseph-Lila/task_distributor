@@ -7,26 +7,32 @@ import pathlib
 CREATE_REGISTERS_TABLE = "CREATE TABLE IF NOT EXISTS registers(" \
                          "id INT PRIMARY KEY," \
                          "title TEXT," \
-                         "description TEXT);"
+                         "description TEXT" \
+                         ");"
 CREATE_RECORDS_TABLE = "CREATE TABLE IF NOT EXISTS records(" \
                        "id INT PRIMARY KEY," \
                        "what TEXT," \
                        "when_ TEXT," \
                        "how_much REAL," \
                        "register_id INT," \
-                       "FOREIGN KEY (register_id) REFERENCES registers(id));"
+                       "FOREIGN KEY (register_id) REFERENCES registers(id)" \
+                       "ON DELETE CASCADE ON UPDATE CASCADE" \
+                       ");"
 CREATE_TASK_TYPES_TABLE = "CREATE TABLE IF NOT EXISTS task_types(" \
                           "id INT PRIMARY KEY," \
                           "title TEXT," \
-                          "description TEXT);"
+                          "description TEXT" \
+                          ");"
 CREATE_STATUSES_TABLE = "CREATE TABLE IF NOT EXISTS statuses(" \
                         "id INT PRIMARY KEY," \
                         "title TEXT," \
-                        "description TEXT);"
+                        "description TEXT" \
+                        ");"
 CREATE_COMPLEXITIES_TABLE = "CREATE TABLE IF NOT EXISTS complexities(" \
                             "id INT PRIMARY KEY," \
                             "title TEXT," \
-                            "description TEXT);"
+                            "description TEXT" \
+                            ");"
 CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS tasks(" \
                      "id INT PRIMARY KEY," \
                      "title TEXT," \
@@ -39,17 +45,19 @@ CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS tasks(" \
                      "complexity_id INT," \
                      "register_id INT," \
                      "task_type_id INT," \
-                     "FOREIGN KEY (status_id) REFERENCES statuses(id)," \
-                     "FOREIGN KEY (complexity_id) REFERENCES complexities(id)," \
-                     "FOREIGN KEY (register_id) REFERENCES registers(id)," \
-                     "FOREIGN KEY (task_type_id) REFERENCES task_types(id));"
+                     "FOREIGN KEY (status_id) REFERENCES statuses(id) ON DELETE CASCADE ON UPDATE CASCADE," \
+                     "FOREIGN KEY (complexity_id) REFERENCES complexities(id) ON DELETE CASCADE ON UPDATE CASCADE," \
+                     "FOREIGN KEY (register_id) REFERENCES registers(id) ON DELETE CASCADE ON UPDATE CASCADE," \
+                     "FOREIGN KEY (task_type_id) REFERENCES task_types(id) ON DELETE CASCADE ON UPDATE CASCADE" \
+                     ");"
 CREATE_UNITS_TABLE = "CREATE TABLE IF NOT EXISTS units(" \
                      "id INT PRIMARY KEY," \
                      "estimation INT," \
                      "status_id INT," \
                      "task_id INT," \
-                     "FOREIGN KEY (status_id) REFERENCES statuses(id)," \
-                     "FOREIGN KEY (task_id) REFERENCES tasks(id));"
+                     "FOREIGN KEY (status_id) REFERENCES statuses(id) ON DELETE CASCADE ON UPDATE CASCADE," \
+                     "FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE ON UPDATE CASCADE" \
+                     ");"
 
 CREATE_CONSTRUCTIONS = [
     CREATE_REGISTERS_TABLE,
@@ -85,4 +93,5 @@ async def create_tables():
         await db.commit()
 
 
-asyncio.run(create_tables())
+if __name__ == "__main__":
+    asyncio.run(create_tables())

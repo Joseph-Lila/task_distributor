@@ -12,5 +12,3 @@ class Register(BaseEntity):
 
     title: str
     description: str
-    records: List[Record]
-    with_task: bool

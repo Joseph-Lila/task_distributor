@@ -10,3 +10,4 @@ class Unit(BaseEntity):
 
     estimation: int
     status_id: int
+    task_id: int
