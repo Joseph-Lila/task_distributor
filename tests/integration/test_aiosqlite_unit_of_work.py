@@ -83,7 +83,29 @@ async def test_repository_get_status_id_by_status_title(in_memory_sqlite_db):
 
 
 @pytest.mark.asyncio
-async def test_create_task(in_memory_sqlite_db):
+async def test_repository_get_complexity_id_by_complexity_title(in_memory_sqlite_db):
+    uow = AiosqliteUnitOfWork(connection_string=in_memory_sqlite_db)
+    complexity_title = 'EASY'
+    async with uow:
+        # create tables
+        for item in CREATE_CONSTRUCTIONS:
+            await uow.conn.execute(item)
+        await uow.commit()
+        # add task_type elem
+        await uow.conn.execute(
+            "INSERT INTO complexities "
+            "(title, description) "
+            "VALUES (?, ?);",
+            (complexity_title, '')
+        )
+        await uow.commit()
+
+        complexity_id = await uow.repository.get_complexity_id_by_complexity_title(complexity_title)
+        assert complexity_id == 1
+
+
+@pytest.mark.asyncio
+async def test_create_task_and_get_tasks(in_memory_sqlite_db):
     uow = AiosqliteUnitOfWork(connection_string=in_memory_sqlite_db)
     status_title = Statuses.IN_PROGRESS.value
     register_title = 'TASKS'
@@ -135,3 +157,56 @@ async def test_create_task(in_memory_sqlite_db):
             status_title=status_title, complexity_title=complexity_title,
             register_title=register_title, task_type_title=task_type_title, units=None
         )
+
+
+@pytest.mark.asyncio
+async def test_delete_task(in_memory_sqlite_db):
+    uow = AiosqliteUnitOfWork(connection_string=in_memory_sqlite_db)
+    status_title = Statuses.IN_PROGRESS.value
+    register_title = 'TASKS'
+    task_type_title = TaskTypes.COMMON.value
+    complexity_title = 'UNDEFINED'
+    title = 'Task1'
+    deadline = datetime.datetime.now()
+    period = 60
+    description = ''
+    estimation = 45
+    async with uow:
+        # create tables
+        for item in CREATE_CONSTRUCTIONS:
+            await uow.conn.execute(item)
+        await uow.commit()
+        await uow.conn.execute(
+            "INSERT INTO statuses "
+            "(title, description) "
+            "VALUES (?, ?);",
+            (status_title, '')
+        )
+        await uow.conn.execute(
+            "INSERT INTO complexities "
+            "(title, description) "
+            "VALUES (?, ?);",
+            (complexity_title, '')
+        )
+        await uow.conn.execute(
+            "INSERT INTO registers "
+            "(title, description) "
+            "VALUES (?, ?);",
+            (register_title, '')
+        )
+        await uow.conn.execute(
+            "INSERT INTO task_types "
+            "(title, description) "
+            "VALUES (?, ?);",
+            (task_type_title, '')
+        )
+        await uow.commit()
+        await uow.repository.create_task(title, deadline, period, description, estimation, status_title, register_title,
+                                         task_type_title)
+        await uow.commit()
+
+        tasks = await uow.repository.get_tasks()
+        assert len(tasks) == 1
+        await uow.repository.delete_task(1)
+        tasks = await uow.repository.get_tasks()
+        assert len(tasks) == 0

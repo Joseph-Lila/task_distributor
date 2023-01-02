@@ -22,20 +22,17 @@ class AbstractRepository(abc.ABC):
     async def edit_task(
             self, task_id, title, deadline, period,
             description, estimation, status_title,
-            register_title, task_type_title
+            register_title, task_type_title,
+            complexity_title
     ):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_another_task(self, current_task_place):
+    async def get_actual_task(self, current_task_place):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_main_task(self):
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def mark_task_as_done(self, task_id):
+    async def change_task_status(self, task_id, status):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -48,4 +45,28 @@ class AbstractRepository(abc.ABC):
 
     @abc.abstractmethod
     async def get_status_id_by_status_title(self, status_title):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def get_complexity_id_by_complexity_title(self, complexity_title):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def get_task_units(self, task_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def add_task_unit(self, estimation, status_title, task_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def edit_task_unit(self, task_unit_id, estimation, status_title):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def delete_task_unit(self, task_unit_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def get_task_py_place(self, place):
         raise NotImplementedError
