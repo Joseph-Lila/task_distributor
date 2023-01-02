@@ -1,3 +1,79 @@
 <MainTaskScreenView>:
     icon: 'shield-bug-outline'
     text: 'Main Page'
+
+    negative_tasks_quantity: negative_tasks_quantity
+    more_button: more_button
+
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDCard:
+            size_hint_y: .12
+            md_bg_color: 76/255, 31/255, 124/255, 1
+            radius: 0
+            padding: 10
+
+            MDCard:
+                style: 'outlined'
+                size_hint_x: .3
+                md_bg_color: 0, 141/255, 142/255, 1
+
+                MDLabel:
+                    id: negative_tasks_quantity
+                    text: '10'
+                    font_style: 'Button'
+                    halign: 'center'
+                    valign: 'center'
+                    outline_color: 189/255, 50/255, 47/255, 1
+                    outline_width: 2
+                    theme_text_color: "Custom"
+                    text_color: 204/255, 191/255, 0, 1
+
+            MDLabel:
+                halign: 'center'
+                valign: 'center'
+                text: 'Negative (title) ...'
+                theme_text_color: "Custom"
+                text_color: 0, 141/255, 142/255, 1
+                font_style: 'H5'
+                bold: True
+
+            MDIconButton:
+                size_hint_x: .2
+                icon: 'information-outline'
+                pos_hint: {"center_x": .5, "center_y": .5}
+                theme_icon_color: "Custom"
+                icon_color: 204/255, 191/255, 0, 1
+
+            MDIconButton:
+                size_hint_x: .2
+                icon: 'arrow-right-bold-circle-outline'
+                pos_hint: {"center_x": .5, "center_y": .5}
+                theme_icon_color: "Custom"
+                icon_color: 189/255, 50/255, 47/255, 1
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 25, 25, 25, 25
+
+            AnchorLayout:
+
+                MDLabel:
+                    halign: 'center'
+                    valign: 'center'
+                    text: 'Title (main)'
+                    theme_text_color: "Custom"
+                    text_color: 0, 141/255, 142/255, 1
+                    font_style: 'H3'
+                    bold: True
+
+            AnchorLayout:
+
+                MDRaisedButton:
+                    id: more_button
+                    text: 'more'
+                    md_bg_color: 76/255, 31/255, 124/255, 1
+                    font_style: 'Button'
+                    on_release: root.tap_target_start()
+

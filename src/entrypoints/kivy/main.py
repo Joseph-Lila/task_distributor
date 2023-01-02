@@ -1,6 +1,5 @@
 from kivy.core.window import Window
 
-Window.size = (400, 600)
 
 import asyncio
 
@@ -9,9 +8,12 @@ from kivymd.app import MDApp
 from src.entrypoints.kivy.screens import ScreenGenerator
 
 
+Window.size = (400, 600)
+
+
 class KivyApp(MDApp):
     title = 'Task Distributor'
-    icon = 'images/icon.jpeg'
+    icon = 'assets/images/icon.jpeg'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -20,7 +22,7 @@ class KivyApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "Purple"
-        self.theme_cls.primary_hue = "200"
+        self.theme_cls.primary_hue = "300"
         self.theme_cls.material_style = "M3"
         return ScreenGenerator().build_app_view()
 
