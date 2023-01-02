@@ -4,6 +4,13 @@
 
     negative_tasks_quantity: negative_tasks_quantity
     more_button: more_button
+    cur_negative_title: cur_negative_title
+    cur_negative_info_btn: cur_negative_info_btn
+    next_negative_btn: next_negative_btn
+    cur_task_title: cur_task_title
+    froze_btn: froze_btn
+    skip_btn: skip_btn
+    accept_btn: accept_btn
 
     MDBoxLayout:
         orientation: 'vertical'
@@ -31,6 +38,7 @@
                     text_color: 204/255, 191/255, 0, 1
 
             MDLabel:
+                id: cur_negative_title
                 halign: 'center'
                 valign: 'center'
                 text: 'Negative (title) ...'
@@ -40,6 +48,7 @@
                 bold: True
 
             MDIconButton:
+                id: cur_negative_info_btn
                 size_hint_x: .2
                 icon: 'information-outline'
                 pos_hint: {"center_x": .5, "center_y": .5}
@@ -47,6 +56,7 @@
                 icon_color: 204/255, 191/255, 0, 1
 
             MDIconButton:
+                id: next_negative_btn
                 size_hint_x: .2
                 icon: 'arrow-right-bold-circle-outline'
                 pos_hint: {"center_x": .5, "center_y": .5}
@@ -60,6 +70,7 @@
             AnchorLayout:
 
                 MDLabel:
+                    id: cur_task_title
                     halign: 'center'
                     valign: 'center'
                     text: 'Title (main)'
@@ -77,3 +88,35 @@
                     font_style: 'Button'
                     on_release: root.tap_target_start()
 
+            BoxLayout:
+                size_hint_y: .3
+
+                AnchorLayout:
+
+                    MDIconButton:
+                        id: froze_btn
+                        icon: 'snowflake'
+                        icon_size: "38sp"
+                        md_bg_color: 204/255, 191/255, 0, .3
+                        theme_icon_color: "Custom"
+                        icon_color: 66/255, 170/255, 1, 1
+
+                AnchorLayout:
+
+                    MDIconButton:
+                        id: skip_btn
+                        icon: 'debug-step-over'
+                        icon_size: "38sp"
+                        md_bg_color: 204/255, 191/255, 0, .3
+                        theme_icon_color: "Custom"
+                        icon_color: 76/255, 31/255, 124/255, 1
+
+                AnchorLayout:
+
+                    MDIconButton:
+                        id: accept_btn
+                        icon: 'check-outline'
+                        icon_size: "38sp"
+                        md_bg_color: 204/255, 191/255, 0, .3
+                        theme_icon_color: "Custom"
+                        icon_color: 0, 141/255, 142/255, 1
