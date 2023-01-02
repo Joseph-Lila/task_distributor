@@ -5,12 +5,12 @@ from src.config import get_sqlite_connection_str
 import pathlib
 
 CREATE_REGISTERS_TABLE = "CREATE TABLE IF NOT EXISTS registers(" \
-                         "id INT PRIMARY KEY," \
+                         "id INTEGER PRIMARY KEY AUTOINCREMENT," \
                          "title TEXT," \
                          "description TEXT" \
                          ");"
 CREATE_RECORDS_TABLE = "CREATE TABLE IF NOT EXISTS records(" \
-                       "id INT PRIMARY KEY," \
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT," \
                        "what TEXT," \
                        "when_ TEXT," \
                        "how_much REAL," \
@@ -19,22 +19,22 @@ CREATE_RECORDS_TABLE = "CREATE TABLE IF NOT EXISTS records(" \
                        "ON DELETE CASCADE ON UPDATE CASCADE" \
                        ");"
 CREATE_TASK_TYPES_TABLE = "CREATE TABLE IF NOT EXISTS task_types(" \
-                          "id INT PRIMARY KEY," \
+                          "id INTEGER PRIMARY KEY AUTOINCREMENT," \
                           "title TEXT," \
                           "description TEXT" \
                           ");"
 CREATE_STATUSES_TABLE = "CREATE TABLE IF NOT EXISTS statuses(" \
-                        "id INT PRIMARY KEY," \
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," \
                         "title TEXT," \
                         "description TEXT" \
                         ");"
 CREATE_COMPLEXITIES_TABLE = "CREATE TABLE IF NOT EXISTS complexities(" \
-                            "id INT PRIMARY KEY," \
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," \
                             "title TEXT," \
                             "description TEXT" \
                             ");"
 CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS tasks(" \
-                     "id INT PRIMARY KEY," \
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT," \
                      "title TEXT," \
                      "deadline TEXT," \
                      "period INT," \
@@ -51,7 +51,7 @@ CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS tasks(" \
                      "FOREIGN KEY (task_type_id) REFERENCES task_types(id) ON DELETE CASCADE ON UPDATE CASCADE" \
                      ");"
 CREATE_UNITS_TABLE = "CREATE TABLE IF NOT EXISTS units(" \
-                     "id INT PRIMARY KEY," \
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT," \
                      "estimation INT," \
                      "status_id INT," \
                      "task_id INT," \

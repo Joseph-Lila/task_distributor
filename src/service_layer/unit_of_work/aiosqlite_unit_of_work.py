@@ -2,6 +2,7 @@
 import aiosqlite
 
 from src import config
+from src.adapters.repositories.aiosqlite.repository import AiosqliteRepository
 from src.service_layer.unit_of_work.abstract_unit_of_work import \
     AbstractUnitOfWork
 
@@ -16,8 +17,17 @@ class AiosqliteUnitOfWork(AbstractUnitOfWork):
         self._connection_string = connection_string
         self._db = None
 
+    @property
+    def conn(self):
+        """
+        Readonly property to get connection.
+        :return:
+        """
+        return self._db
+
     async def __aenter__(self):
         self._db = await aiosqlite.connect(self._connection_string)
+        self.repository = AiosqliteRepository(self._db)
         return await super().__aenter__()
 
     async def __aexit__(self, *args):

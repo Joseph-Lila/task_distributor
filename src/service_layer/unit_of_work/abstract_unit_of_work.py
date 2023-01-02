@@ -1,11 +1,15 @@
 """ Module src.unit_of_work """
 import abc
+from typing import Optional
+
+from src.adapters.repositories.abstract_repository import AbstractRepository
 
 
 class AbstractUnitOfWork(abc.ABC):
     """
     Abstract class for `unit of work` realizations.
     """
+    repository: Optional[AbstractRepository]
 
     async def __aenter__(self):
         return self

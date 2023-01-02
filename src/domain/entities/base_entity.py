@@ -1,9 +1,9 @@
 """ Module src.domain.entities """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
 class BaseEntity:
     """ Base entity class """
 
-    item_id: int = field(init=False)
+    item_id: int
