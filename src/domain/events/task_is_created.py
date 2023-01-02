@@ -1,13 +1,11 @@
 import datetime
 from dataclasses import dataclass
-from typing import List, Optional
 
-from src.domain.commands.command import Command
-from src.domain.entities.unit import Unit
+from src.domain.events.event import Event
 
 
 @dataclass
-class CreateTask(Command):
+class TaskIsCreated(Event):
     title: str
     deadline: datetime.datetime
     period: int

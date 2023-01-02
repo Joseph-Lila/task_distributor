@@ -1,8 +1,9 @@
 import asyncio
+import pathlib
 
 import aiosqlite
+
 from src.config import get_sqlite_connection_str
-import pathlib
 
 CREATE_REGISTERS_TABLE = "CREATE TABLE IF NOT EXISTS registers(" \
                          "id INTEGER PRIMARY KEY AUTOINCREMENT," \
