@@ -13,7 +13,7 @@ class AiosqliteRepository(AbstractRepository):
     def __init__(self, session):
         self.session = session
 
-    async def get_tasks(self) -> List[Task]:
+    async def get_all_tasks(self) -> List[Task]:
         cursor = await self.session.execute(
             "SELECT tasks.id, tasks.title, tasks.deadline, tasks.period, tasks.place, tasks.description, "
             "tasks.estimation, statuses.title, complexities.title, registers.title, task_types.title "

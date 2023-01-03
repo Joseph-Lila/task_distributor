@@ -1,6 +1,11 @@
-from kivy.clock import mainthread
+import asyncio
+import functools
 
-from src.entrypoints.kivy.controllers.abstract_controller import AbstractController
+from kivy.clock import mainthread
+import asynckivy as ak
+
+from src.domain.commands.get_all_tasks import GetAllTasks
+from src.entrypoints.kivy.controllers.abstract_controller import AbstractController, use_bus
 from src.entrypoints.kivy.views.tasks_log_screen.tasks_log_screen import TasksLogScreenView
 
 
@@ -13,6 +18,12 @@ class TasksLogScreenController(AbstractController):
     def get_view(self):
         return self._view
 
+    @use_bus
+    async def get_all_tasks(self, *args):
+        event = await self.bus.handle_command(GetAllTasks())
+        if event:
+            await self._view.update_data_table_rows(event.tasks)
+
     @mainthread
     def _init_manipulations(self, *args):
-        pass
+        ak.start(self.get_all_tasks())

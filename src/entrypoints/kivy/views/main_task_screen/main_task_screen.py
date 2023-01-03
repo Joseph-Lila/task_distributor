@@ -12,12 +12,13 @@ class MainTaskScreenView(MDBottomNavigationItem):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.tap_target_view = None
-        self.current_task: Optional[Task] = None
+        self._tap_target_view = None
+        self._current_task: Optional[Task] = None
+        self._current_negative_task: Optional[Task] = None
         self._init_view()
 
     def _init_view(self):
-        self.tap_target_view = MDTapTargetView(
+        self._tap_target_view = MDTapTargetView(
             widget=self.more_button,
             title_text='No text',
             title_text_size="36sp",
@@ -29,10 +30,10 @@ class MainTaskScreenView(MDBottomNavigationItem):
         )
 
     def tap_target_start(self):
-        if self.tap_target_view.state == "close":
-            self.tap_target_view.start()
+        if self._tap_target_view.state == "close":
+            self._tap_target_view.start()
         else:
-            self.tap_target_view.stop()
+            self._tap_target_view.stop()
 
     async def update_negative_task(self, cur_negative_task: Optional[Task] = None):
         if not cur_negative_task:
@@ -40,6 +41,7 @@ class MainTaskScreenView(MDBottomNavigationItem):
             self.next_negative_btn.disabled = True
             self.cur_negative_title.text = 'Empty ...'
         else:
+            self._current_negative_task = cur_negative_task
             self.cur_negative_info_btn.disabled = False
             self.next_negative_btn.disabled = False
             self.cur_negative_title.text = cur_negative_task.title
@@ -58,8 +60,9 @@ class MainTaskScreenView(MDBottomNavigationItem):
             self.skip_btn.disabled = True
             self.accept_btn.disabled = True
         else:
-            self.tap_target_view.title_text = cur_task.title
-            self.tap_target_view.description_text = cur_task.description
+            self._current_task = cur_task
+            self._tap_target_view.title_text = cur_task.title
+            self._tap_target_view.description_text = cur_task.description
             self.cur_task_title.text = cur_task.title
             self.more_button.disabled = False
             self.froze_btn.disabled = False

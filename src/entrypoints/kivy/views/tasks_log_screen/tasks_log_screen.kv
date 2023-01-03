@@ -1,3 +1,50 @@
 <TasksLogScreenView>:
     icon: 'book-open-outline'
     text: 'Tasks Log'
+
+    data_table_cont: data_table_cont
+    drop_item: drop_item
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: 25, 25, 25, 25
+        spacing: 10
+
+        BoxLayout:
+            size_hint_y: .15
+
+            AnchorLayout:
+
+                MDIconButton:
+                    icon: 'delete-outline'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    theme_icon_color: "Custom"
+                    icon_color: 189/255, 50/255, 47/255, 1
+
+            AnchorLayout:
+
+                MDIconButton:
+                    icon: 'update'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    theme_icon_color: "Custom"
+                    icon_color: 204/255, 191/255, 0, 1
+
+            AnchorLayout:
+
+                MDIconButton:
+                    icon: 'plus-circle-outline'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    theme_icon_color: "Custom"
+                    icon_color: 0, 141/255, 142/255, 1
+
+        AnchorLayout:
+            size_hint_y: .15
+
+            MDDropDownItem:
+                id: drop_item
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                text: ''
+
+        MDBoxLayout:
+            id: data_table_cont
+

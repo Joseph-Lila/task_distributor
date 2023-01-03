@@ -16,7 +16,7 @@ class MainScreenController(AbstractController):
 
     async def hard_operation(self):
         print('start')
-        await ak.sleep(3)
+        # await ak.sleep(3)
         print('end')
 
     @mainthread

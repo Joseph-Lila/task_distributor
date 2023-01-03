@@ -150,7 +150,7 @@ async def test_create_task_and_get_tasks(in_memory_sqlite_db):
         await uow.repository.create_task(title, deadline, period, description, estimation, status_title, register_title,
                                          task_type_title)
         await uow.commit()
-        tasks = await uow.repository.get_tasks()
+        tasks = await uow.repository.get_all_tasks()
         assert len(tasks) == 1
         assert tasks[0] == Task(
             item_id=1, title=title, deadline=deadline, period=period,
@@ -206,10 +206,10 @@ async def test_delete_task_and_get_tasks(in_memory_sqlite_db):
                                          task_type_title)
         await uow.commit()
 
-        tasks = await uow.repository.get_tasks()
+        tasks = await uow.repository.get_all_tasks()
         assert len(tasks) == 1
         await uow.repository.delete_task(1)
-        tasks = await uow.repository.get_tasks()
+        tasks = await uow.repository.get_all_tasks()
         assert len(tasks) == 0
 
 
@@ -259,7 +259,7 @@ async def test_edit_task(in_memory_sqlite_db):
         await uow.repository.create_task(title, deadline, period, description, estimation, status_title, register_title,
                                          task_type_title)
         await uow.commit()
-        tasks = await uow.repository.get_tasks()
+        tasks = await uow.repository.get_all_tasks()
         assert len(tasks) == 1
         assert tasks[0] == Task(
             item_id=1, title=title, deadline=deadline, period=period,
@@ -271,7 +271,7 @@ async def test_edit_task(in_memory_sqlite_db):
         await uow.repository.edit_task(
             1, new_title, deadline, period, description, estimation, status_title,
             register_title, task_type_title, complexity_title)
-        tasks = await uow.repository.get_tasks()
+        tasks = await uow.repository.get_all_tasks()
         assert tasks[0] == Task(
             item_id=1, title=new_title, deadline=deadline, period=period,
             place=None, description=description, estimation=estimation,

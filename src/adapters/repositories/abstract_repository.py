@@ -8,7 +8,7 @@ from src.domain.entities.unit import Unit
 class AbstractRepository(abc.ABC):
 
     @abc.abstractmethod
-    async def get_tasks(self) -> List[Task]:
+    async def get_all_tasks(self) -> List[Task]:
         raise NotImplementedError
 
     @abc.abstractmethod
