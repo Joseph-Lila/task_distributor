@@ -34,7 +34,7 @@ class MainTaskScreenView(MDBottomNavigationItem):
         else:
             self.tap_target_view.stop()
 
-    def update_negative_task(self, cur_negative_task: Optional[Task] = None):
+    async def update_negative_task(self, cur_negative_task: Optional[Task] = None):
         if not cur_negative_task:
             self.cur_negative_info_btn.disabled = True
             self.next_negative_btn.disabled = True
@@ -44,13 +44,13 @@ class MainTaskScreenView(MDBottomNavigationItem):
             self.next_negative_btn.disabled = False
             self.cur_negative_title.text = cur_negative_task.title
 
-    def update_negative_tasks_quantity(self, quantity: Optional[int] = None):
+    async def update_negative_tasks_quantity(self, quantity: Optional[int] = None):
         if not quantity:
             self.negative_tasks_quantity.text = '?'
         else:
             self.negative_tasks_quantity.text = str(quantity)
 
-    def update_current_task(self, cur_task: Optional[Task] = None):
+    async def update_current_task(self, cur_task: Optional[Task] = None):
         if not cur_task:
             self.more_button.disabled = True
             self.cur_task_title.text = 'Empty...'
