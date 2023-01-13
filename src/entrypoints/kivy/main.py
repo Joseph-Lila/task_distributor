@@ -17,6 +17,7 @@ class KivyApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        from src.entrypoints.kivy.views.main import DateField, MyTextField
         self.load_all_kv_files(self.directory)
 
     def build(self):

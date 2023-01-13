@@ -5,6 +5,7 @@ from src.domain.entities.base_entity import BaseEntity
 
 
 class TaskTypes(enum.Enum):
+    ALL = 'ALL'
     COMMON = 'COMMON'
     COMMON_WITH_PERIOD = 'COMMON_WITH_PERIOD'
     NEGATIVE = 'NEGATIVE'

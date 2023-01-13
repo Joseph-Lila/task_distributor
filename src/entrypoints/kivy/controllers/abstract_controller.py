@@ -3,9 +3,17 @@ import asyncio
 import functools
 
 from kivy.clock import mainthread
+from kivy.factory import Factory
 
 
-def use_bus(func):
+async def do_with_loading_modal_view(func, *args, **kwargs):
+    loading_modal_view = Factory.LoadingModalView()
+    loading_modal_view.open()
+    await func(*args, **kwargs)
+    loading_modal_view.dismiss()
+
+
+def use_loop(func):
     @functools.wraps(func)
     async def wrapped(self, *args, **kwargs):
         try:
