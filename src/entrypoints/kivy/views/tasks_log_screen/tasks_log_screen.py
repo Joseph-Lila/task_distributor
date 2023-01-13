@@ -30,6 +30,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
         super().__init__(*args, **kwargs)
         self._data_table = None
         self.task_types_menu = None
+        self.task_types_menu_for_cur_task = None
         self.date_dialog = None
         self.adding_dialog = None
         self._tasks: List[Task] = []
@@ -38,8 +39,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
     def _init_view(self):
         ak.start(self._init_date_dialog())
         ak.start(self._add_data_table())
-        ak.start(self._add_drop_down())
-        ak.start(self._init_adding_dialog())
+        ak.start(self._add_drop_downs())
 
     async def _add_data_table(self):
         self._data_table = MDDataTable(
@@ -64,38 +64,38 @@ class TasksLogScreenView(MDBottomNavigationItem):
         self.date_dialog.bind(on_save=self.on_save_date_dialog)
 
     def on_save_date_dialog(self, instance, value, date_range):
-        self.adding_dialog.content_cls.date_field.text = str(value)
+        self.date_field.text = str(value)
 
-    async def generate_units(self, *args):
-        units_quantity = self.adding_dialog.content_cls.panel.content.units_quantity.text
-        if units_quantity.isnumeric() and int(units_quantity) > 0:
-            children = self.adding_dialog.content_cls.panel.content
-
-    async def _init_adding_dialog(self):
-        ok_button = MDFlatButton(
-            text='OK',
-            theme_text_color='Custom',
-            text_color=self.theme_cls.primary_color,
-        )
-        content_cls = Factory.AddingDialogCls()
-        self.adding_dialog = MDDialog(
-            title="Task's modal view",
-            type='custom',
-            content_cls=content_cls,
-            buttons=[
-                ok_button,
-            ],
-        )
-        content_cls.root = self
-        ok_button.bind(on_release=self.prepare_data_for_task_creation)
-
-    async def _add_drop_down(self):
+    async def _add_drop_downs(self):
         items = await self._get_task_types_menu_items()
         self.task_types_menu = MDDropdownMenu(
             caller=self.drop_item,
             items=items,
             width_mult=4,
         )
+
+        items_for_current_task = await self._get_task_types_menu_items_for_cur_task()
+        self.task_types_menu_for_cur_task = MDDropdownMenu(
+            caller=self.task_type_drop_item,
+            items=items_for_current_task,
+            width_mult=4,
+        )
+
+    def _update_task_type_for_cur_task(self, new_value):
+        corrected_new_value = new_value.capitalize().replace('_', ' ')
+        self.task_type_drop_item.text = corrected_new_value
+        print(new_value)
+
+    async def _get_task_types_menu_items_for_cur_task(self):
+        ans = [
+            {
+                "text": item.value.capitalize().replace('_', ' '),
+                "viewclass": "OneLineListItem",
+                "on_release": lambda x=item.value: self._update_task_type_for_cur_task(x),
+            } for item in TaskTypes
+        ]
+        ans.pop(0)
+        return ans
 
     async def _get_task_types_menu_items(self):
         return [
@@ -129,6 +129,3 @@ class TasksLogScreenView(MDBottomNavigationItem):
                         task.task_type_title,
                     )
                 )
-
-    def prepare_data_for_task_creation(self, *args):
-        print('add')

@@ -48,3 +48,9 @@ class TasksLogScreenController(AbstractController):
     @staticmethod
     async def get_available_task_types():
         return [item.value for item in TaskTypes]
+
+    def go_to_creation_screen(self, *args):
+        self._view.screen_manager.current = 'add task'
+
+    def go_to_table_screen(self, *args):
+        self._view.screen_manager.current = 'table'

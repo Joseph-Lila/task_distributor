@@ -2,35 +2,163 @@
     icon: 'book-open-outline'
     text: 'Tasks Log'
 
+    screen_manager: screen_manager
     data_table_cont: data_table_cont
     drop_item: drop_item
+    task_type_drop_item: task_type_drop_item
+    date_field: date_field
 
-    MDBoxLayout:
-        orientation: 'vertical'
-        padding: 25, 25, 25, 25
-        spacing: 10
+    ScreenManager:
+        id: screen_manager
 
-        BoxLayout:
-            size_hint_y: .15
+        MDScreen:
+            name: 'table'
 
-            AnchorLayout:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: 25, 25, 25, 25
+                spacing: 10
 
-                MDDropDownItem:
-                    id: drop_item
-                    pos_hint: {'center_x': .5, 'center_y': .5}
-                    on_release: root.task_types_menu.open()
+                BoxLayout:
+                    size_hint_y: .15
 
-            AnchorLayout:
-                size_hint_x: .3
+                    AnchorLayout:
 
-                TooltipMDIconButton:
-                    icon: 'plus-circle-outline'
-                    tooltip_text: 'Add task'
-                    pos_hint: {"center_x": .5, "center_y": .5}
-                    theme_icon_color: "Custom"
-                    icon_color: 0, 141/255, 142/255, 1
-                    on_release: root.adding_dialog.open()
+                        MDDropDownItem:
+                            id: drop_item
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            on_release: root.task_types_menu.open()
 
-        MDBoxLayout:
-            id: data_table_cont
+                    AnchorLayout:
+                        size_hint_x: .3
 
+                        TooltipMDIconButton:
+                            icon: 'minus-circle-outline'
+                            tooltip_text: 'Remove marked tasks'
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            theme_icon_color: "Custom"
+                            icon_color: 0, 141/255, 142/255, 1
+
+                    AnchorLayout:
+                        size_hint_x: .3
+
+                        TooltipMDIconButton:
+                            icon: 'plus-circle-outline'
+                            tooltip_text: 'Add task'
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            theme_icon_color: "Custom"
+                            icon_color: 0, 141/255, 142/255, 1
+                            on_release: root.controller.go_to_creation_screen()
+
+                MDBoxLayout:
+                    id: data_table_cont
+
+
+        MDScreen:
+            name: 'add task'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                MDCard:
+                    orientation: 'vertical'
+
+                    ScrollView:
+                        size: self.size
+
+                        MDGridLayout:
+                            id: grid
+
+                            cols: 1
+                            size_hint_y: None
+                            row_default_height: '60dp'
+                            adaptive_height:True
+                            spacing: 3, 3
+                            padding: 10, 10, 10, 10
+
+                            MyTextField:
+                                hint_text: 'title'
+                                icon: 'format-title'
+                                disabled: False
+
+                            DateField:
+                                id: date_field
+                                view: root
+                                hint_text: 'deadline'
+
+                            MyTextField:
+                                hint_text: 'period'
+                                icon: 'sync-circle'
+                                input_filter: 'int'
+                                disabled: False
+
+                            MyTextField:
+                                hint_text: 'description'
+                                icon: 'details'
+                                disabled: False
+
+                            MyTextField:
+                                id: estimation
+                                hint_text: 'estimation'
+                                icon: 'crosshairs'
+                                input_filter: 'int'
+                                disabled: False
+
+                            MyTextField:
+                                hint_text: 'register'
+                                icon: 'registered-trademark'
+                                disabled: False
+
+                            BoxLayout:
+                                size_hint_y: None
+                                height: task_type_drop_item.height
+
+                                AnchorLayout:
+
+                                    MDLabel:
+                                        halign: 'center'
+                                        text: 'Task Type:'
+
+                                AnchorLayout:
+
+                                    MDDropDownItem:
+                                        id: task_type_drop_item
+
+                                        on_release: root.task_types_menu_for_cur_task.open()
+
+                            MDLabel:
+                                halign: 'center'
+                                pos_hint: {'center_x': .5, 'center_y': .5}
+                                text: 'Complex part'
+
+                            MyTextField:
+                                hint_text: 'common title'
+                                icon: 'format-title'
+                                disabled: False
+
+                            MyTextField:
+                                hint_text: 'measure (items per min)'
+                                icon: 'tape-measure'
+                                disabled: False
+
+                            AnchorLayout:
+
+                                MDIconButton:
+                                    icon: 'shield-moon-outline'
+                                    theme_icon_color: "Custom"
+                                    icon_color: 0, 141/255, 142/255, 1
+
+                BoxLayout:
+                    size_hint_y: .15
+
+                    AnchorLayout:
+
+                        MDTextButton:
+                            text: 'Cancel'
+                            on_release:
+                                root.controller.go_to_table_screen()
+
+                    AnchorLayout:
+
+                        MDTextButton:
+                            text: 'Add'
