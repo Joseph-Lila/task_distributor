@@ -48,6 +48,9 @@ class AiosqliteRepository(AbstractRepository):
         register_id = await self.get_register_id_by_register_title(register_title)
         task_type_id = await self.get_task_type_id_by_task_type_title(task_type_title)
         complexity_id = await self.get_complexity_id_by_complexity_title(complexity_title)
+
+        if not (status_id and register_id and task_type_id and complexity_id):
+            raise ValueError
         await self.session.execute(
             "INSERT INTO tasks "
             "(title, deadline, period, description, estimation, status_id, complexity_id, register_id, task_type_id) "
@@ -126,7 +129,9 @@ class AiosqliteRepository(AbstractRepository):
             (status_title,)
         )
         status_id = await cursor.fetchone()
-        return status_id[0]
+
+        if status_id:
+            return status_id[0]
 
     async def get_register_id_by_register_title(self, register_title) -> Optional[int]:
         cursor = await self.session.execute(
@@ -135,8 +140,10 @@ class AiosqliteRepository(AbstractRepository):
             "WHERE title = ?;",
             (register_title,)
         )
+
         register_id = await cursor.fetchone()
-        return register_id[0]
+        if register_id:
+            return register_id[0]
 
     async def get_complexity_id_by_complexity_title(self, complexity_title) -> Optional[int]:
         cursor = await self.session.execute(
@@ -145,8 +152,10 @@ class AiosqliteRepository(AbstractRepository):
             "WHERE title = ?;",
             (complexity_title,)
         )
+
         complexity_id = await cursor.fetchone()
-        return complexity_id[0]
+        if complexity_id:
+            return complexity_id[0]
 
     async def get_task_type_id_by_task_type_title(self, task_type_title) -> Optional[int]:
         cursor = await self.session.execute(
@@ -155,8 +164,10 @@ class AiosqliteRepository(AbstractRepository):
             "WHERE title = ?;",
             (task_type_title,)
         )
+
         task_type_id = await cursor.fetchone()
-        return task_type_id[0]
+        if task_type_id:
+            return task_type_id[0]
 
     async def get_task_units(self, task_id) -> Optional[List[Unit]]:
         cursor = await self.session.execute(

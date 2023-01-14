@@ -38,8 +38,8 @@ class TasksLogScreenController(AbstractController):
                 status_title, register_title, task_type_title
             )
         )
-        if event:
-            await self._view
+        # if event:
+        #     await self._view
 
     @mainthread
     def _init_manipulations(self, *args):
@@ -50,7 +50,10 @@ class TasksLogScreenController(AbstractController):
         return [item.value for item in TaskTypes]
 
     def go_to_creation_screen(self, *args):
-        self._view.screen_manager.current = 'add task'
+        self._view.task_log_screen_manager.current = 'tasks fields screen'
 
     def go_to_table_screen(self, *args):
-        self._view.screen_manager.current = 'table'
+        self._view.task_log_screen_manager.current = 'table'
+
+    def go_to_units_screen(self, *args):
+        self._view.task_log_screen_manager.current = 'units screen'

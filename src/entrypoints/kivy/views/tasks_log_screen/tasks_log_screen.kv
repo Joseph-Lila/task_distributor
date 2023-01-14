@@ -1,15 +1,25 @@
+#: import ak asynckivy
+
+
 <TasksLogScreenView>:
     icon: 'book-open-outline'
     text: 'Tasks Log'
 
-    screen_manager: screen_manager
+    task_log_screen_manager: task_log_screen_manager
     data_table_cont: data_table_cont
     drop_item: drop_item
-    task_type_drop_item: task_type_drop_item
+    title_field: title_field
     date_field: date_field
+    period_field: period_field
+    description_field: description_field
+    estimation_field: estimation_field
+    register_field: register_field
+    task_type_drop_item: task_type_drop_item
+    common_title_field: common_title_field
+    measure_field: measure_field
 
     ScreenManager:
-        id: screen_manager
+        id: task_log_screen_manager
 
         MDScreen:
             name: 'table'
@@ -55,7 +65,7 @@
 
 
         MDScreen:
-            name: 'add task'
+            name: 'tasks fields screen'
 
             BoxLayout:
                 orientation: 'vertical'
@@ -77,6 +87,7 @@
                             padding: 10, 10, 10, 10
 
                             MyTextField:
+                                id: title_field
                                 hint_text: 'title'
                                 icon: 'format-title'
                                 disabled: False
@@ -87,24 +98,29 @@
                                 hint_text: 'deadline'
 
                             MyTextField:
+                                id: period_field
                                 hint_text: 'period'
+                                text: '-1'
                                 icon: 'sync-circle'
                                 input_filter: 'int'
                                 disabled: False
 
                             MyTextField:
+                                id: description_field
                                 hint_text: 'description'
                                 icon: 'details'
                                 disabled: False
 
                             MyTextField:
-                                id: estimation
+                                id: estimation_field
+                                text: '0'
                                 hint_text: 'estimation'
                                 icon: 'crosshairs'
                                 input_filter: 'int'
                                 disabled: False
 
                             MyTextField:
+                                id: register_field
                                 hint_text: 'register'
                                 icon: 'registered-trademark'
                                 disabled: False
@@ -123,7 +139,6 @@
 
                                     MDDropDownItem:
                                         id: task_type_drop_item
-
                                         on_release: root.task_types_menu_for_cur_task.open()
 
                             MDLabel:
@@ -132,11 +147,13 @@
                                 text: 'Complex part'
 
                             MyTextField:
+                                id: common_title_field
                                 hint_text: 'common title'
                                 icon: 'format-title'
                                 disabled: False
 
                             MyTextField:
+                                id: measure_field
                                 hint_text: 'measure (items per min)'
                                 icon: 'tape-measure'
                                 disabled: False
@@ -147,18 +164,41 @@
                                     icon: 'shield-moon-outline'
                                     theme_icon_color: "Custom"
                                     icon_color: 0, 141/255, 142/255, 1
+                                    on_release: root.controller.go_to_units_screen()
 
-                BoxLayout:
+                ScreenManager:
                     size_hint_y: .15
 
-                    AnchorLayout:
+                    MDScreen:
+                        name: 'add'
 
-                        MDTextButton:
-                            text: 'Cancel'
-                            on_release:
-                                root.controller.go_to_table_screen()
+                        BoxLayout:
 
-                    AnchorLayout:
+                            AnchorLayout:
 
-                        MDTextButton:
-                            text: 'Add'
+                                MDTextButton:
+                                    text: 'Cancel'
+                                    on_release:
+                                        root.controller.go_to_table_screen()
+
+                            AnchorLayout:
+
+                                MDTextButton:
+                                    text: 'Add'
+                                    on_release:
+                                        ak.start(root.prepare_data_for_adding())
+
+        MDScreen:
+            name: 'units screen'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                AnchorLayout:
+                    size_hint_y: .15
+
+                    MDIconButton:
+                        icon: 'door'
+                        on_release: root.controller.go_to_creation_screen()
+
+                MDCard:

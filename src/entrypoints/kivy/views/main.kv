@@ -5,6 +5,8 @@
     size_hint_y: None
     height: text_field.height
 
+    text_field: text_field
+
     MDTextField:
         id: text_field
         hint_text: root.hint_text
@@ -19,6 +21,8 @@
 <DateField>:
     size_hint_y: None
     height: text_field.height
+
+    text_field: text_field
 
     MDTextField:
         id: text_field
@@ -44,105 +48,3 @@
 
     Button:
         text: 'Please, wait...'
-
-
-<ContentCls@BoxLayout>:
-    Button:
-        text: 'hey'
-
-
-<AddingDialogCls@BoxLayout>:
-    id: cont
-    orientation: 'vertical'
-    spacing: "12dp"
-    size_hint_y: None
-    height: "200dp"
-
-    date_field: date_field
-    grid: grid
-
-    ScrollView:
-        size: self.size
-
-        MDGridLayout:
-            id: grid
-
-            cols: 1
-            size_hint_y: None
-            row_default_height: '60dp'
-            adaptive_height:True
-            spacing: 3, 3
-            padding: 10, 10, 10, 10
-
-            MyTextField:
-                hint_text: 'title'
-                icon: 'format-title'
-                disabled: False
-
-            DateField:
-                id: date_field
-                cont: cont
-                hint_text: 'deadline'
-
-            MyTextField:
-                hint_text: 'period'
-                icon: 'sync-circle'
-                input_filter: 'int'
-                disabled: False
-
-            MyTextField:
-                hint_text: 'description'
-                icon: 'details'
-                disabled: False
-
-            MyTextField:
-                id: estimation
-                hint_text: 'estimation'
-                icon: 'crosshairs'
-                input_filter: 'int'
-                disabled: False
-
-            MyTextField:
-                hint_text: 'register'
-                icon: 'registered-trademark'
-                disabled: False
-
-            BoxLayout:
-                size_hint_y: None
-                height: task_type_drop_item.height
-
-                MDLabel:
-                    text: 'Task Type:'
-
-                MDDropDownItem:
-                    id: task_type_drop_item
-                    text: 'COMMON'
-                    on_text:
-                        print('hi')
-
-            MDLabel:
-                halign: 'center'
-                pos_hint: {'center_x': .5, 'center_y': .5}
-                text: 'Complex part'
-
-            MyTextField:
-                hint_text: 'common title'
-                icon: 'format-title'
-                disabled: False
-
-            MyTextField:
-                hint_text: 'units quantity'
-                icon: 'counter'
-                disabled: False
-
-            MyTextField:
-                hint_text: 'measure (items per min)'
-                icon: 'tape-measure'
-                disabled: False
-
-            AnchorLayout:
-
-                MDIconButton:
-                    icon: 'shield-moon-outline'
-                    theme_icon_color: "Custom"
-                    icon_color: 0, 141/255, 142/255, 1

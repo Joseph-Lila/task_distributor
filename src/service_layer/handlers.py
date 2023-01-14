@@ -1,5 +1,7 @@
 from typing import Callable, Dict, Type
 
+from loguru import logger
+
 from src.domain.commands.command import Command
 from src.domain.commands.create_task import CreateTask
 from src.domain.commands.get_all_tasks import GetAllTasks
@@ -23,13 +25,17 @@ async def create_task(
         uow: AbstractUnitOfWork,
 ):
     async with uow:
-        await uow.repository.create_task(
-            cmd.title, cmd.deadline, cmd.period,
-            cmd.description, cmd.estimation,
-            cmd.status_title, cmd.register_title,
-            cmd.task_type_title
-        )
-        await uow.commit()
+        try:
+            await uow.repository.create_task(
+                cmd.title, cmd.deadline, cmd.period,
+                cmd.description, cmd.estimation,
+                cmd.status_title, cmd.register_title,
+                cmd.task_type_title
+            )
+            await uow.commit()
+        except:
+            logger.info('It is impossible to create task.')
+
     return TaskIsCreated(cmd.title, cmd.deadline, cmd.period,
                          cmd.description, cmd.estimation,
                          cmd.status_title, cmd.register_title,

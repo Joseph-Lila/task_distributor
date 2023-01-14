@@ -14,10 +14,12 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
 from kivymd.uix.menu import MDDropdownMenu
 import asyncio
-
+from dateutil.parser import parse
 from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.textfield import MDTextField
 
+from src.domain.entities.status import Statuses
 from src.domain.entities.task import Task
 from src.domain.entities.task_type import TaskTypes
 from src.entrypoints.kivy.controllers.abstract_controller import use_loop
@@ -82,14 +84,13 @@ class TasksLogScreenView(MDBottomNavigationItem):
         )
 
     def _update_task_type_for_cur_task(self, new_value):
-        corrected_new_value = new_value.capitalize().replace('_', ' ')
-        self.task_type_drop_item.text = corrected_new_value
+        self.task_type_drop_item.text = new_value
         print(new_value)
 
     async def _get_task_types_menu_items_for_cur_task(self):
         ans = [
             {
-                "text": item.value.capitalize().replace('_', ' '),
+                "text": item.value,
                 "viewclass": "OneLineListItem",
                 "on_release": lambda x=item.value: self._update_task_type_for_cur_task(x),
             } for item in TaskTypes
@@ -100,15 +101,14 @@ class TasksLogScreenView(MDBottomNavigationItem):
     async def _get_task_types_menu_items(self):
         return [
             {
-                "text": item.value.capitalize().replace('_', ' '),
+                "text": item.value,
                 "viewclass": "OneLineListItem",
                 "on_release": lambda x=item.value: self._update_current_tasks_type(x),
             } for item in TaskTypes
         ]
 
     def _update_current_tasks_type(self, new_value):
-        corrected_new_value = new_value.capitalize().replace('_', ' ')
-        self.drop_item.text = corrected_new_value
+        self.drop_item.text = new_value
         print(new_value)
 
     async def update_data_table_rows(self, tasks: List[Task] = None):
@@ -129,3 +129,55 @@ class TasksLogScreenView(MDBottomNavigationItem):
                         task.task_type_title,
                     )
                 )
+
+    async def _check_complex_adding_part(self, *args):
+        task_type_drop_item = self.task_type_drop_item.text
+        common_title_field = self.common_title_field.text_field.text
+        measure_field = self.measure_field.text_field.text
+        if task_type_drop_item == TaskTypes.COMPLEX.value and common_title_field and measure_field:
+            return True
+        elif task_type_drop_item != TaskTypes.COMPLEX.value:
+            return True
+        return False
+
+    async def _check_common_adding_part(self, *args):
+        title_field = self.title_field.text_field.text
+        date_field = self.date_field.text_field.text
+        period_field = self.period_field.text_field.text
+        description_field = self.description_field.text_field.text
+        estimation_field = self.estimation_field.text_field.text
+        register_field = self.register_field.text_field.text
+        task_type_drop_item = self.task_type_drop_item.text
+
+        if all(
+                [
+                    title_field, date_field, period_field, description_field,
+                    estimation_field, register_field, task_type_drop_item,
+                ]
+        ):
+            return True
+        return False
+
+    async def _check_adding_form_is_filled(self, *args):
+        complex_part = await self._check_complex_adding_part()
+        common_part = await self._check_common_adding_part()
+        if not (complex_part and common_part):
+            Snackbar(text='Please, fill the fields...').open()
+            return False
+        return True
+
+    async def prepare_data_for_adding(self, *args):
+        filled = await self._check_adding_form_is_filled()
+        if filled:
+            title = self.title_field.text_field.text
+            deadline = parse(self.date_field.text_field.text)
+            period = int(self.period_field.text_field.text)
+            description = self.description_field.text_field.text
+            estimation = int(self.estimation_field.text_field.text)
+            register_title = self.register_field.text_field.text
+            task_type_title = self.task_type_drop_item.text
+
+            await self.controller.create_task(
+                title, deadline, period, description,
+                estimation, Statuses.IN_PROGRESS.value, register_title, task_type_title,
+            )
