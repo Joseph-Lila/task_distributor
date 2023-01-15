@@ -43,20 +43,22 @@ class AiosqliteRepository(AbstractRepository):
         return tasks
 
     async def create_task(self, title, deadline, period, description, estimation, status_title, register_title,
-                          task_type_title, complexity_title=Complexities.UNDEFINED.value) -> None:
+                          task_type_title, complexity_title=Complexities.UNDEFINED.value) -> int:
         status_id = await self.get_status_id_by_status_title(status_title)
         register_id = await self.get_register_id_by_register_title(register_title)
         task_type_id = await self.get_task_type_id_by_task_type_title(task_type_title)
         complexity_id = await self.get_complexity_id_by_complexity_title(complexity_title)
 
         if not (status_id and register_id and task_type_id and complexity_id):
-            raise ValueError
-        await self.session.execute(
+            raise ValueError('Cannot get id by title...')
+        cursor = await self.session.cursor()
+        await cursor.execute(
             "INSERT INTO tasks "
             "(title, deadline, period, description, estimation, status_id, complexity_id, register_id, task_type_id) "
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
             (title, deadline, period, description, estimation, status_id, complexity_id, register_id, task_type_id)
         )
+        return cursor.lastrowid
 
     async def delete_task(self, task_id) -> None:
         await self.session.execute(

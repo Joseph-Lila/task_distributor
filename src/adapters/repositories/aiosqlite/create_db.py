@@ -59,6 +59,28 @@ CREATE_UNITS_TABLE = "CREATE TABLE IF NOT EXISTS units(" \
                      "FOREIGN KEY (status_id) REFERENCES statuses(id) ON DELETE CASCADE ON UPDATE CASCADE," \
                      "FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE ON UPDATE CASCADE" \
                      ");"
+ADD_TASKS_REGISTER_RECORD = "INSERT INTO registers (title, description) VALUES ('Tasks', 'Main register');"
+ADD_STATUSES_RECORDS = [
+    "INSERT INTO statuses (title, description) VALUES ('DONE', 'Task is completely done.'); ",
+    "INSERT INTO statuses (title, description) VALUES ('FROZEN', 'Task is not completed and now is not activated.'); ",
+    "INSERT INTO statuses (title, description) VALUES ('IN PROGRESS', 'Task is doing now.'); ",
+]
+ADD_TASK_TYPES_RECORDS = [
+    "INSERT INTO task_types (title, description) VALUES ('COMMON', 'Such tasks may be completed once.'); ",
+    "INSERT INTO task_types (title, description) VALUES ('COMMON_WITH_PERIOD', 'After task is completed it borns again.'); ",
+    "INSERT INTO task_types (title, description) VALUES ('NEGATIVE', 'I do not need to do it till the deadline.'); ",
+    "INSERT INTO task_types (title, description) VALUES ('NEGATIVE_WITH_PERIOD', 'I do not need to do it till the deadline again and again.'); ",
+    "INSERT INTO task_types (title, description) VALUES ('COMPLEX', 'Has units under it.'); ",
+    "INSERT INTO task_types (title, description) VALUES ('SPECIAL', 'Must be done firstly.'); ",
+]
+ADD_COMPLEXITIES_RECORDS = [
+    "INSERT INTO complexities (title, description) VALUES ('UNDEFINED', 'I need to analyze the situation.'); ",
+    "INSERT INTO complexities (title, description) VALUES ('EASY', 'I have 100 hours more than I need before the deadline.'); ",
+    "INSERT INTO complexities (title, description) VALUES ('MEDIUM', 'I have 60 hours more than I need before the deadline.'); ",
+    "INSERT INTO complexities (title, description) VALUES ('HARD', 'I have 30 hours more than I need before the deadline.'); ",
+    "INSERT INTO complexities (title, description) VALUES ('CRITICAL', 'I have estimation time sharply to complete this task.'); ",
+    "INSERT INTO complexities (title, description) VALUES ('IMPOSSIBLE', 'There is 20% of estimated time before the deadline.'); ",
+]
 
 CREATE_CONSTRUCTIONS = [
     CREATE_REGISTERS_TABLE,
@@ -68,6 +90,10 @@ CREATE_CONSTRUCTIONS = [
     CREATE_COMPLEXITIES_TABLE,
     CREATE_TASKS_TABLE,
     CREATE_UNITS_TABLE,
+    ADD_TASKS_REGISTER_RECORD,
+    *ADD_STATUSES_RECORDS,
+    *ADD_TASK_TYPES_RECORDS,
+    *ADD_COMPLEXITIES_RECORDS,
 ]
 
 
@@ -88,10 +114,10 @@ async def create_tables():
     if not check_db_file_exists():
         with open(get_sqlite_connection_str(), 'w'):
             pass
-    async with aiosqlite.connect(get_sqlite_connection_str()) as db:
-        for command in CREATE_CONSTRUCTIONS:
-            await db.execute(command)
-        await db.commit()
+        async with aiosqlite.connect(get_sqlite_connection_str()) as db:
+            for command in CREATE_CONSTRUCTIONS:
+                await db.execute(command)
+            await db.commit()
 
 
 if __name__ == "__main__":

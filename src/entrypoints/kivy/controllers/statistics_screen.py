@@ -1,7 +1,9 @@
 from kivy.clock import mainthread
 
-from src.entrypoints.kivy.controllers.abstract_controller import AbstractController
-from src.entrypoints.kivy.views.statistics_screen.statistics_screen import StatisticsScreenView
+from src.entrypoints.kivy.controllers.abstract_controller import \
+    AbstractController
+from src.entrypoints.kivy.views.statistics_screen.statistics_screen import \
+    StatisticsScreenView
 
 
 class StatisticsScreenController(AbstractController):

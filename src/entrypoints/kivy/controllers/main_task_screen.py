@@ -1,8 +1,10 @@
-from kivy.clock import mainthread
 import asynckivy as ak
+from kivy.clock import mainthread
 
-from src.entrypoints.kivy.controllers.abstract_controller import AbstractController
-from src.entrypoints.kivy.views.main_task_screen.main_task_screen import MainTaskScreenView
+from src.entrypoints.kivy.controllers.abstract_controller import \
+    AbstractController
+from src.entrypoints.kivy.views.main_task_screen.main_task_screen import \
+    MainTaskScreenView
 
 
 class MainTaskScreenController(AbstractController):

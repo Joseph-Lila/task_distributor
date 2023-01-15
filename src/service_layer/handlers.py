@@ -24,19 +24,19 @@ async def create_task(
         cmd: CreateTask,
         uow: AbstractUnitOfWork,
 ):
+    new_item_id = -1
     async with uow:
         try:
-            await uow.repository.create_task(
+            new_item_id = await uow.repository.create_task(
                 cmd.title, cmd.deadline, cmd.period,
                 cmd.description, cmd.estimation,
                 cmd.status_title, cmd.register_title,
                 cmd.task_type_title
             )
             await uow.commit()
-        except:
-            logger.info('It is impossible to create task.')
-
-    return TaskIsCreated(cmd.title, cmd.deadline, cmd.period,
+        except Exception as e:
+            logger.exception(e)
+    return TaskIsCreated(new_item_id, cmd.title, cmd.deadline, cmd.period,
                          cmd.description, cmd.estimation,
                          cmd.status_title, cmd.register_title,
                          cmd.task_type_title)

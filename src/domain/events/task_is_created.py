@@ -6,6 +6,7 @@ from src.domain.events.event import Event
 
 @dataclass
 class TaskIsCreated(Event):
+    id: int
     title: str
     deadline: datetime.datetime
     period: int

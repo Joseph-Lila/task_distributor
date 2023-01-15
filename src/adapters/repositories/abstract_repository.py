@@ -15,7 +15,7 @@ class AbstractRepository(abc.ABC):
     async def create_task(
             self, title, deadline, period, description, estimation,
             status_title, register_title, task_type_title,
-    ) -> None:
+    ) -> int:
         raise NotImplementedError
 
     @abc.abstractmethod

@@ -1,8 +1,9 @@
+import asynckivy as ak
 from kivy.clock import mainthread
 
-from src.entrypoints.kivy.controllers.abstract_controller import AbstractController, do_with_loading_modal_view
+from src.entrypoints.kivy.controllers.abstract_controller import (
+    AbstractController, do_with_loading_modal_view)
 from src.entrypoints.kivy.views.main_screen.main_screen import MainScreenView
-import asynckivy as ak
 
 
 class MainScreenController(AbstractController):
