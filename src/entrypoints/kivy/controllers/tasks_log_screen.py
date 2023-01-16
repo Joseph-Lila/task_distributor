@@ -7,6 +7,7 @@ from kivy.clock import mainthread
 
 from src.domain.commands.create_task import CreateTask
 from src.domain.commands.get_all_tasks import GetAllTasks
+from src.domain.commands.get_tasks_by_type import GetTasksByType
 from src.domain.entities.complexity import Complexities
 from src.domain.entities.task import Task
 from src.domain.entities.task_type import TaskTypes
@@ -29,6 +30,12 @@ class TasksLogScreenController(AbstractController):
     @use_loop
     async def get_all_tasks(self):
         event = await self.bus.handle_command(GetAllTasks())
+        if event:
+            await self._view.update_data_table_rows(event.tasks)
+
+    @use_loop
+    async def get_tasks_by_status(self, status: str):
+        event = await self.bus.handle_command(GetTasksByType(status))
         if event:
             await self._view.update_data_table_rows(event.tasks)
 

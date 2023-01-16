@@ -42,6 +42,37 @@ class AiosqliteRepository(AbstractRepository):
             )
         return tasks
 
+    async def get_tasks_by_type(self, status: str) -> List[Task]:
+        cursor = await self.session.execute(
+            "SELECT tasks.id, tasks.title, tasks.deadline, tasks.period, tasks.place, tasks.description, "
+            "tasks.estimation, statuses.title, complexities.title, registers.title, task_types.title "
+            "FROM tasks INNER JOIN statuses "
+            "ON tasks.status_id = statuses.id "
+            "INNER JOIN complexities "
+            "ON tasks.complexity_id = complexities.id "
+            "INNER JOIN registers "
+            "ON tasks.register_id = registers.id "
+            "INNER JOIN task_types "
+            "ON tasks.task_type_id = task_types.id "
+            "WHERE task_types.title = ?;",
+            (status,)
+        )
+        task_rows = await cursor.fetchall()
+        tasks = []
+        for task_row in task_rows:
+            task_id = task_row[0]
+            units = await self.get_task_units(task_id)
+            tasks.append(
+                Task(
+                    item_id=task_row[0], title=task_row[1], deadline=parse(task_row[2]),
+                    period=task_row[3], place=task_row[4], description=task_row[5],
+                    estimation=task_row[6], status_title=task_row[7],
+                    complexity_title=task_row[8], register_title=task_row[9],
+                    task_type_title=task_row[10], units=units
+                )
+            )
+        return tasks
+
     async def create_task(self, title, deadline, period, description, estimation, status_title, register_title,
                           task_type_title, complexity_title=Complexities.UNDEFINED.value) -> int:
         status_id = await self.get_status_id_by_status_title(status_title)

@@ -88,7 +88,6 @@ class TasksLogScreenView(MDBottomNavigationItem):
 
     def _update_task_type_for_cur_task(self, new_value):
         self.task_type_drop_item.text = new_value
-        print(new_value)
 
     async def _get_task_types_menu_items_for_cur_task(self):
         ans = [
@@ -113,12 +112,11 @@ class TasksLogScreenView(MDBottomNavigationItem):
     def _update_current_tasks_type(self, new_value):
         self.drop_item.text = new_value
         if new_value == TaskTypes.ALL.value:
-            print('get_all')
             ak.start(self.controller.get_all_tasks())
-
+        else:
+            ak.start(self.controller.get_tasks_by_type(new_value))
 
     async def append_data_table_row(self, task: Task):
-        print(f'new_item_id = {task.item_id}')
         self._tasks.append(task)
         self._data_table.row_data.append(
             (
@@ -131,10 +129,9 @@ class TasksLogScreenView(MDBottomNavigationItem):
         )
 
     async def update_data_table_rows(self, tasks: List[Task] = None):
-        if not tasks:
-            self._tasks = []
-            self._data_table.row_data = []
-        else:
+        self._tasks = []
+        self._data_table.row_data = []
+        if tasks:
             for task in tasks:
                 await self.append_data_table_row(task)
 
