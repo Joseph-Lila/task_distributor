@@ -6,7 +6,7 @@ from src.domain.entities.base_entity import BaseEntity
 from src.domain.entities.record import Record
 
 
-TASKS_REGISTER = 'Tasks'
+TASKS_DEFAULT_REGISTER = 'Tasks'
 
 
 @dataclass

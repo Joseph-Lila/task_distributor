@@ -23,6 +23,15 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    async def create_task_unit(
+            self,
+            estimation,
+            status_title,
+            task_id,
+    ) -> None:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     async def delete_task(self, task_id) -> None:
         raise NotImplementedError
 

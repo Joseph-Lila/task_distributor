@@ -2,12 +2,15 @@ from typing import Callable, Dict, Type
 
 from loguru import logger
 
+from src.domain.commands.allocate_tasks import AllocateTasks
 from src.domain.commands.command import Command
 from src.domain.commands.create_task import CreateTask
+from src.domain.commands.create_task_unit import CreateTaskUnit
 from src.domain.commands.get_all_tasks import GetAllTasks
 from src.domain.commands.get_tasks_by_type import GetTasksByType
 from src.domain.events.got_all_tasks import GotAllTasks
 from src.domain.events.task_is_created import TaskIsCreated
+from src.domain.events.tasks_are_allocated import TasksAreAllocated
 from src.service_layer.unit_of_work.abstract_unit_of_work import \
     AbstractUnitOfWork
 
@@ -34,26 +37,41 @@ async def create_task(
         cmd: CreateTask,
         uow: AbstractUnitOfWork,
 ):
-    new_item_id = -1
     async with uow:
-        try:
-            new_item_id = await uow.repository.create_task(
-                cmd.title, cmd.deadline, cmd.period,
-                cmd.description, cmd.estimation,
-                cmd.status_title, cmd.register_title,
-                cmd.task_type_title
-            )
-            await uow.commit()
-        except Exception as e:
-            logger.exception(e)
-    return TaskIsCreated(new_item_id, cmd.title, cmd.deadline, cmd.period,
-                         cmd.description, cmd.estimation,
-                         cmd.status_title, cmd.register_title,
-                         cmd.task_type_title)
+        new_item_id = await uow.repository.create_task(
+            cmd.title, cmd.deadline, cmd.period,
+            cmd.description, cmd.estimation,
+            cmd.status_title, cmd.register_title,
+            cmd.task_type_title,
+        )
+        await uow.commit()
+    return TaskIsCreated(new_item_id)
+
+
+async def create_task_unit(
+        cmd: CreateTaskUnit,
+        uow: AbstractUnitOfWork,
+):
+    async with uow:
+        await uow.repository.create_task_unit(
+            cmd.estimation,
+            cmd.status_title,
+            cmd.task_id,
+        )
+        await uow.commit()
+
+
+async def allocate_tasks(
+        cmd: AllocateTasks,
+        uow: AbstractUnitOfWork,
+):
+    return TasksAreAllocated()
 
 
 COMMAND_HANDLERS = {
     CreateTask: create_task,
     GetAllTasks: get_all_tasks,
     GetTasksByType: get_tasks_by_type,
+    CreateTaskUnit: create_task_unit,
+    AllocateTasks: allocate_tasks,
 }  # type: Dict[Type[Command], Callable]

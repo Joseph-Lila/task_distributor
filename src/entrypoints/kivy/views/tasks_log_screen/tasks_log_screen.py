@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import math
 from functools import partial
 from typing import List
 
@@ -20,7 +21,7 @@ from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.textfield import MDTextField
 
-from src.domain.entities.register import TASKS_REGISTER
+from src.domain.entities.register import TASKS_DEFAULT_REGISTER
 from src.domain.entities.status import Statuses
 from src.domain.entities.task import Task
 from src.domain.entities.task_type import TaskTypes
@@ -60,7 +61,11 @@ class TasksLogScreenView(MDBottomNavigationItem):
             row_data=[],
             elevation=2,
         )
+        self._data_table.bind(on_row_press=self.on_data_table_row_press)
         self.data_table_cont.add_widget(self._data_table)
+
+    def on_data_table_row_press(self, parent, cur_cell):
+        print(parent.get_row_checks())
 
     async def _init_date_dialog(self):
         self.date_dialog = MDDatePicker(
@@ -109,6 +114,12 @@ class TasksLogScreenView(MDBottomNavigationItem):
             } for item in TaskTypes
         ]
 
+    def update_table(self):
+        if self.drop_item.text == TaskTypes.ALL.value:
+            ak.start(self.controller.get_all_tasks())
+        else:
+            ak.start(self.controller.get_tasks_by_type(self.drop_item.text))
+
     def _update_current_tasks_type(self, new_value):
         self.drop_item.text = new_value
         if new_value == TaskTypes.ALL.value:
@@ -136,27 +147,34 @@ class TasksLogScreenView(MDBottomNavigationItem):
                 await self.append_data_table_row(task)
 
     async def _check_complex_adding_part(self, *args):
-        task_type_drop_item = self.task_type_drop_item.text
-        common_title_field = self.common_title_field.text_field.text
-        measure_field = self.measure_field.text_field.text
-        if task_type_drop_item == TaskTypes.COMPLEX.value and common_title_field and measure_field:
+        data = await self._get_task_forms_data()
+        if data['task_type'] == TaskTypes.COMPLEX.value and data['units_common_title'] and data['min_per_unit']:
             return True
-        elif task_type_drop_item != TaskTypes.COMPLEX.value:
+        elif data['task_type'] != TaskTypes.COMPLEX.value:
             return True
         return False
 
-    async def _check_common_adding_part(self, *args):
-        title_field = self.title_field.text_field.text
-        date_field = self.date_field.text_field.text
-        period_field = self.period_field.text_field.text
-        description_field = self.description_field.text_field.text
-        estimation_field = self.estimation_field.text_field.text
-        task_type_drop_item = self.task_type_drop_item.text
+    async def _get_task_forms_data(self):
+        units = None
+        data = {
+            'task_title': self.title_field.text_field.text,
+            'deadline': self.date_field.text_field.text,
+            'period': self.period_field.text_field.text,
+            'task_description': self.description_field.text_field.text,
+            'task_estimation': self.estimation_field.text_field.text,
+            'task_type': self.task_type_drop_item.text,
+            'units_common_title': self.common_title_field.text_field.text,
+            'min_per_unit': self.measure_field.text_field.text,
+            'units': units,
+        }
+        return data
 
+    async def _check_common_adding_part(self, *args):
+        data = await self._get_task_forms_data()
         if all(
                 [
-                    title_field, date_field, period_field, description_field,
-                    estimation_field, task_type_drop_item,
+                    data['task_title'], data['deadline'], data['period'],
+                    data['task_description'], data['task_estimation'], data['task_type'],
                 ]
         ):
             return True
@@ -171,17 +189,19 @@ class TasksLogScreenView(MDBottomNavigationItem):
         return True
 
     async def prepare_data_for_adding(self, *args):
+        data = await self._get_task_forms_data()
         filled = await self._check_adding_form_is_filled()
         if filled:
-            title = self.title_field.text_field.text
-            deadline = parse(self.date_field.text_field.text)
-            period = int(self.period_field.text_field.text)
-            description = self.description_field.text_field.text
-            estimation = int(self.estimation_field.text_field.text)
-            register_title = TASKS_REGISTER
-            task_type_title = self.task_type_drop_item.text
+            title = data['task_title']
+            deadline = parse(data['deadline'])
+            period = int(data['period'])
+            description = data['task_description']
+            estimation = int(data['task_estimation'])
+            register_title = TASKS_DEFAULT_REGISTER
+            task_type_title = data['task_type']
 
             await self.controller.create_task(
                 title, deadline, period, description, estimation,
                 Statuses.IN_PROGRESS.value, register_title, task_type_title,
+                data['units']
             )

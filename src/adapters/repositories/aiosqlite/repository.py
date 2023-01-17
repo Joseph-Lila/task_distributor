@@ -91,6 +91,18 @@ class AiosqliteRepository(AbstractRepository):
         )
         return cursor.lastrowid
 
+    async def create_task_unit(self, estimation, status_title, task_id) -> None:
+        status_id = await self.get_status_id_by_status_title(status_title)
+
+        if not status_id:
+            raise ValueError('Cannot get id by title...')
+        await self.session.execute(
+            "INSERT INTO units "
+            "(estimation, status_id, task_id) "
+            "VALUES (?, ?, ?);",
+            (estimation, status_id, task_id)
+        )
+
     async def delete_task(self, task_id) -> None:
         await self.session.execute(
             "DELETE FROM tasks "
