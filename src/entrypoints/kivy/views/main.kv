@@ -1,6 +1,62 @@
 #: import ak asynckivy
 
 
+<TaskItem@MDCard>:
+
+    title: title
+    deadline: deadline
+    period: period
+    status: status
+    type: type
+
+    BoxLayout:
+        spacing: 10
+        padding: 10
+        orientation: "vertical"
+
+        GridLayout:
+            cols: 2
+            rows: 1
+            size_hint_y: .2
+            spacing: 10
+            padding: 10
+
+            AnchorLayout:
+                MDRaisedButton:
+                    text: "Edit"
+                    on_press: ak.start(root.parent.view.edit_task(root.item_id))
+
+            AnchorLayout:
+                MDRaisedButton:
+                    text: "Delete"
+                    md_bg_color: "red"
+                    on_press: print('delete')
+
+        GridLayout:
+            cols: 2
+            rows: 6
+            spacing: 10
+
+            MDTextField:
+                id: title
+                hint_text: "title"
+
+            MDTextField:
+                id: deadline
+                hint_text: "deadline"
+
+            MDTextField:
+                id: period
+                hint_text: "period"
+
+            MDTextField:
+                id: status
+                hint_text: "status"
+
+            MDTextField:
+                id: type
+                hint_text: "type"
+
 <MyTextField>:
     size_hint_y: None
     height: text_field.height

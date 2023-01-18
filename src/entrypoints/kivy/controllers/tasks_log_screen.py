@@ -91,3 +91,6 @@ class TasksLogScreenController(AbstractController):
 
     def go_to_units_screen(self, *args):
         self._view.task_log_screen_manager.current = 'units screen'
+
+    async def go_to_edit_screen(self, task: Task):
+        print(task)

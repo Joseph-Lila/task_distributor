@@ -33,39 +33,17 @@ class TasksLogScreenView(MDBottomNavigationItem):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._data_table = None
         self.task_types_menu = None
         self.task_types_menu_for_cur_task = None
         self.date_dialog = None
         self.adding_dialog = None
-        self._tasks: List[Task] = []
+        self._tasks = []
         self._init_view()
 
     def _init_view(self):
         ak.start(self._init_date_dialog())
-        ak.start(self._add_data_table())
         ak.start(self._add_drop_downs())
         self._update_current_tasks_type(TaskTypes.ALL.value)
-
-    async def _add_data_table(self):
-        self._data_table = MDDataTable(
-            use_pagination=True,
-            check=True,
-            column_data=[
-                ("Title", dp(60)),
-                ("Deadline", dp(45)),
-                ("Period", dp(30)),
-                ("Status", dp(45)),
-                ("Type", dp(45)),
-            ],
-            row_data=[],
-            elevation=2,
-        )
-        self._data_table.bind(on_row_press=self.on_data_table_row_press)
-        self.data_table_cont.add_widget(self._data_table)
-
-    def on_data_table_row_press(self, parent, cur_cell):
-        print(parent.get_row_checks())
 
     async def _init_date_dialog(self):
         self.date_dialog = MDDatePicker(
@@ -75,6 +53,13 @@ class TasksLogScreenView(MDBottomNavigationItem):
 
     def on_save_date_dialog(self, instance, value, date_range):
         self.date_field.text = str(value)
+
+    async def edit_task(self, item_id):
+        for task in self._tasks:
+            if task.item_id == item_id:
+                await self.controller.go_to_edit_screen(task)
+                return
+        raise ValueError('Impossible to edit task...')
 
     async def _add_drop_downs(self):
         items = await self._get_task_types_menu_items()
@@ -129,19 +114,18 @@ class TasksLogScreenView(MDBottomNavigationItem):
 
     async def append_data_table_row(self, task: Task):
         self._tasks.append(task)
-        self._data_table.row_data.append(
-            (
-                task.title,
-                task.deadline,
-                str(task.period),
-                task.status_title,
-                task.task_type_title,
-            )
-        )
+        new_widget = Factory.TaskItem()
+        new_widget.item_id = task.item_id
+        new_widget.title.text = task.title
+        new_widget.deadline.text = str(task.deadline)
+        new_widget.period.text = str(task.period)
+        new_widget.status.text = task.status_title
+        new_widget.type.text = task.task_type_title
+        self.tasks.add_widget(new_widget)
 
     async def update_data_table_rows(self, tasks: List[Task] = None):
         self._tasks = []
-        self._data_table.row_data = []
+        self.tasks.clear_widgets()
         if tasks:
             for task in tasks:
                 await self.append_data_table_row(task)

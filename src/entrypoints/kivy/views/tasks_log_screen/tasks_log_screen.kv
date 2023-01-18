@@ -4,9 +4,10 @@
 <TasksLogScreenView>:
     icon: 'book-open-outline'
     text: 'Tasks Log'
+    id: view
 
+    tasks: tasks
     task_log_screen_manager: task_log_screen_manager
-    data_table_cont: data_table_cont
     drop_item: drop_item
     title_field: title_field
     date_field: date_field
@@ -49,8 +50,19 @@
                             icon_color: 0, 141/255, 142/255, 1
                             on_release: root.controller.go_to_creation_screen()
 
-                MDBoxLayout:
-                    id: data_table_cont
+                ScrollView:
+                    size: self.size
+
+                    MDGridLayout:
+                        id: tasks
+                        view: view
+
+                        cols: 1
+                        size_hint_y: None
+                        row_default_height: '250dp'
+                        adaptive_height: True
+                        spacing: 5, 5
+                        padding: 10, 10, 10, 10
 
 
         MDScreen:
