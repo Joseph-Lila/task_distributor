@@ -22,19 +22,23 @@
             padding: 10
 
             AnchorLayout:
-                MDRaisedButton:
+                MDFillRoundFlatButton:
                     text: "Edit"
+                    theme_text_color: "Custom"
+                    text_color: 204/255, 191/255, 0, 1
+                    md_bg_color: 0, 141/255, 142/255, 1
                     on_press: ak.start(root.parent.view.edit_task(root.item_id))
 
             AnchorLayout:
-                MDRaisedButton:
+                MDFillRoundFlatButton:
                     text: "Delete"
-                    md_bg_color: "red"
+                    theme_text_color: "Custom"
+                    text_color: 204/255, 191/255, 0, 1
+                    md_bg_color: 189/255, 50/255, 47/255, 1
                     on_press: print('delete')
 
         GridLayout:
-            cols: 2
-            rows: 6
+            cols: 1
             spacing: 10
 
             MDTextField:

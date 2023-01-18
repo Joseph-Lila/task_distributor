@@ -59,7 +59,7 @@
 
                         cols: 1
                         size_hint_y: None
-                        row_default_height: '250dp'
+                        row_default_height: '450dp'
                         adaptive_height: True
                         spacing: 5, 5
                         padding: 10, 10, 10, 10
@@ -70,6 +70,8 @@
 
             BoxLayout:
                 orientation: 'vertical'
+                padding: 25, 25, 25, 25
+                spacing: 10
 
                 MDCard:
                     orientation: 'vertical'
@@ -101,7 +103,6 @@
                             MyTextField:
                                 id: period_field
                                 hint_text: 'period'
-                                text: '-1'
                                 icon: 'sync-circle'
                                 input_filter: 'int'
                                 disabled: False
@@ -114,7 +115,6 @@
 
                             MyTextField:
                                 id: estimation_field
-                                text: '0'
                                 hint_text: 'estimation'
                                 icon: 'crosshairs'
                                 input_filter: 'int'
@@ -125,10 +125,15 @@
                                 height: task_type_drop_item.height
 
                                 AnchorLayout:
+                                    size_hint_x: .45
 
                                     MDLabel:
                                         halign: 'center'
                                         text: 'Task Type:'
+                                        theme_text_color: "Custom"
+                                        text_color: 204/255, 191/255, 0, 1
+                                        font_style: 'Button'
+                                        italic: True
 
                                 AnchorLayout:
 
@@ -140,6 +145,10 @@
                                 halign: 'center'
                                 pos_hint: {'center_x': .5, 'center_y': .5}
                                 text: 'Complex part'
+                                theme_text_color: "Custom"
+                                text_color: 204/255, 191/255, 0, 1
+                                font_style: 'H4'
+                                italic: True
 
                             MyTextField:
                                 id: common_title_field
@@ -173,15 +182,19 @@
 
                                 MDTextButton:
                                     text: 'Cancel'
+                                    color: 204/255, 191/255, 0, 1
                                     on_release:
                                         root.controller.go_to_table_screen()
 
                             AnchorLayout:
 
-                                MDTextButton:
+                                MDFillRoundFlatButton:
                                     text: 'Add'
+                                    theme_text_color: "Custom"
+                                    text_color: 204/255, 191/255, 0, 1
+                                    md_bg_color: 0, 141/255, 142/255, 1
                                     on_release:
-                                        ak.start(root.prepare_data_for_adding())
+                                        ak.start(root.add_task_request())
 
         MDScreen:
             name: 'units screen'

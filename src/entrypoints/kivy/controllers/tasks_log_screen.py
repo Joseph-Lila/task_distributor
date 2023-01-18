@@ -37,13 +37,13 @@ class TasksLogScreenController(AbstractController):
     async def get_all_tasks(self):
         event = await self.bus.handle_command(GetAllTasks())
         if event:
-            await self._view.update_data_table_rows(event.tasks)
+            await self._view.update_tasks_cards(event.tasks)
 
     @use_loop
     async def get_tasks_by_type(self, status: str):
         event = await self.bus.handle_command(GetTasksByType(status))
         if event:
-            await self._view.update_data_table_rows(event.tasks)
+            await self._view.update_tasks_cards(event.tasks)
 
     @use_loop
     async def create_task(
@@ -71,9 +71,10 @@ class TasksLogScreenController(AbstractController):
         event: TasksAreAllocated = await self.bus.handle_command(
             AllocateTasks()
         )
-        # update data table
+        # update tasks cards
         if event:
-            self._view.update_table()
+            self._view.update_tasks_cards_request()
+        self.go_to_table_screen()
 
     @mainthread
     def _init_manipulations(self, *args):
@@ -88,6 +89,7 @@ class TasksLogScreenController(AbstractController):
 
     def go_to_table_screen(self, *args):
         self._view.task_log_screen_manager.current = 'table'
+        self._view.clear_task_form()
 
     def go_to_units_screen(self, *args):
         self._view.task_log_screen_manager.current = 'units screen'

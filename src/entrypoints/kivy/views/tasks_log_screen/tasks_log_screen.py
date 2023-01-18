@@ -25,7 +25,7 @@ from src.domain.entities.register import TASKS_DEFAULT_REGISTER
 from src.domain.entities.status import Statuses
 from src.domain.entities.task import Task
 from src.domain.entities.task_type import TaskTypes
-from src.entrypoints.kivy.controllers.abstract_controller import use_loop
+from src.entrypoints.kivy.controllers.abstract_controller import use_loop, do_with_loading_modal_view
 
 
 class TasksLogScreenView(MDBottomNavigationItem):
@@ -43,7 +43,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
     def _init_view(self):
         ak.start(self._init_date_dialog())
         ak.start(self._add_drop_downs())
-        self._update_current_tasks_type(TaskTypes.ALL.value)
+        self._update_current_tasks_type_request(TaskTypes.ALL.value)
 
     async def _init_date_dialog(self):
         self.date_dialog = MDDatePicker(
@@ -95,24 +95,42 @@ class TasksLogScreenView(MDBottomNavigationItem):
             {
                 "text": item.value,
                 "viewclass": "OneLineListItem",
-                "on_release": lambda x=item.value: self._update_current_tasks_type(x),
+                "on_release": lambda x=item.value: self._update_current_tasks_type_request(x),
             } for item in TaskTypes
         ]
 
-    def update_table(self):
+    def update_tasks_cards_request(self):
         if self.drop_item.text == TaskTypes.ALL.value:
-            ak.start(self.controller.get_all_tasks())
+            ak.start(
+                do_with_loading_modal_view(
+                    self.controller.get_all_tasks
+                )
+            )
         else:
-            ak.start(self.controller.get_tasks_by_type(self.drop_item.text))
+            ak.start(
+                do_with_loading_modal_view(
+                    self.controller.get_tasks_by_type,
+                    self.drop_item.text
+                )
+            )
 
-    def _update_current_tasks_type(self, new_value):
+    def _update_current_tasks_type_request(self, new_value):
         self.drop_item.text = new_value
         if new_value == TaskTypes.ALL.value:
-            ak.start(self.controller.get_all_tasks())
+            ak.start(
+                do_with_loading_modal_view(
+                    self.controller.get_all_tasks
+                )
+            )
         else:
-            ak.start(self.controller.get_tasks_by_type(new_value))
+            ak.start(
+                do_with_loading_modal_view(
+                    self.controller.get_tasks_by_type,
+                    new_value
+                )
+            )
 
-    async def append_data_table_row(self, task: Task):
+    async def append_task_card(self, task: Task):
         self._tasks.append(task)
         new_widget = Factory.TaskItem()
         new_widget.item_id = task.item_id
@@ -123,12 +141,12 @@ class TasksLogScreenView(MDBottomNavigationItem):
         new_widget.type.text = task.task_type_title
         self.tasks.add_widget(new_widget)
 
-    async def update_data_table_rows(self, tasks: List[Task] = None):
+    async def update_tasks_cards(self, tasks: List[Task] = None):
         self._tasks = []
         self.tasks.clear_widgets()
         if tasks:
             for task in tasks:
-                await self.append_data_table_row(task)
+                await self.append_task_card(task)
 
     async def _check_complex_adding_part(self, *args):
         data = await self._get_task_forms_data()
@@ -153,14 +171,28 @@ class TasksLogScreenView(MDBottomNavigationItem):
         }
         return data
 
+    def clear_task_form(self):
+        self.title_field.text_field.text = ''
+        self.date_field.text_field.text = ''
+        self.period_field.text_field.text = ''
+        self.description_field.text_field.text = ''
+        self.estimation_field.text_field.text = ''
+        self.task_type_drop_item.text = ''
+        self.common_title_field.text_field.text = ''
+        self.measure_field.text_field.text = ''
+
     async def _check_common_adding_part(self, *args):
         data = await self._get_task_forms_data()
         if all(
                 [
-                    data['task_title'], data['deadline'], data['period'],
-                    data['task_description'], data['task_estimation'], data['task_type'],
+                    data['task_title'], data['deadline'], data['task_type'],
+                    data['task_estimation']
                 ]
         ):
+            if data['task_type'] in [
+                TaskTypes.COMMON_WITH_PERIOD.value, TaskTypes.NEGATIVE_WITH_PERIOD.value
+            ] and not data['period']:
+                return False
             return True
         return False
 
@@ -168,11 +200,11 @@ class TasksLogScreenView(MDBottomNavigationItem):
         complex_part = await self._check_complex_adding_part()
         common_part = await self._check_common_adding_part()
         if not (complex_part and common_part):
-            Snackbar(text='Please, fill the fields...').open()
+            Snackbar(text='Please, fill the fields [complex part, common_part]...').open()
             return False
         return True
 
-    async def prepare_data_for_adding(self, *args):
+    async def add_task_request(self, *args):
         data = await self._get_task_forms_data()
         filled = await self._check_adding_form_is_filled()
         if filled:
@@ -184,8 +216,10 @@ class TasksLogScreenView(MDBottomNavigationItem):
             register_title = TASKS_DEFAULT_REGISTER
             task_type_title = data['task_type']
 
-            await self.controller.create_task(
-                title, deadline, period, description, estimation,
-                Statuses.IN_PROGRESS.value, register_title, task_type_title,
-                data['units']
+            ak.start(
+                do_with_loading_modal_view(
+                    self.controller.create_task,
+                    title, deadline, period, description, estimation, Statuses.IN_PROGRESS.value,
+                    register_title, task_type_title, data['units']
+                )
             )
