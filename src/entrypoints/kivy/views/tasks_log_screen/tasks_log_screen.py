@@ -1,31 +1,21 @@
-import asyncio
 import datetime
-import math
-from functools import partial
-from typing import List
+from typing import List, Optional
 
 import asynckivy as ak
 from dateutil.parser import parse
 from kivy.factory import Factory
-from kivy.metrics import dp
 from kivy.properties import ObjectProperty
-from kivy.uix.button import Button
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDFlatButton, MDRaisedButton
-from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.snackbar import Snackbar
-from kivymd.uix.textfield import MDTextField
 
 from src.domain.entities.register import TASKS_DEFAULT_REGISTER
 from src.domain.entities.status import Statuses
-from src.domain.entities.task import Task
+from src.domain.entities.task import Task, NO_PERIOD_VALUE
 from src.domain.entities.task_type import TaskTypes
-from src.entrypoints.kivy.controllers.abstract_controller import use_loop, do_with_loading_modal_view
+from src.entrypoints.kivy.controllers.abstract_controller import \
+    do_with_loading_modal_view
 
 
 class TasksLogScreenView(MDBottomNavigationItem):
@@ -38,6 +28,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
         self.date_dialog = None
         self.adding_dialog = None
         self._tasks = []
+        self._cur_task: Optional[Task] = None
         self._init_view()
 
     def _init_view(self):
@@ -148,14 +139,6 @@ class TasksLogScreenView(MDBottomNavigationItem):
             for task in tasks:
                 await self.append_task_card(task)
 
-    async def _check_complex_adding_part(self, *args):
-        data = await self._get_task_forms_data()
-        if data['task_type'] == TaskTypes.COMPLEX.value and data['units_common_title'] and data['min_per_unit']:
-            return True
-        elif data['task_type'] != TaskTypes.COMPLEX.value:
-            return True
-        return False
-
     async def _get_task_forms_data(self):
         units = None
         data = {
@@ -165,8 +148,6 @@ class TasksLogScreenView(MDBottomNavigationItem):
             'task_description': self.description_field.text_field.text,
             'task_estimation': self.estimation_field.text_field.text,
             'task_type': self.task_type_drop_item.text,
-            'units_common_title': self.common_title_field.text_field.text,
-            'min_per_unit': self.measure_field.text_field.text,
             'units': units,
         }
         return data
@@ -178,8 +159,15 @@ class TasksLogScreenView(MDBottomNavigationItem):
         self.description_field.text_field.text = ''
         self.estimation_field.text_field.text = ''
         self.task_type_drop_item.text = ''
-        self.common_title_field.text_field.text = ''
-        self.measure_field.text_field.text = ''
+
+    def fill_task_form(self, task: Task):
+        self._cur_task = task
+        self.title_field.text_field.text = task.title
+        self.date_field.text_field.text = str(task.deadline)
+        self.period_field.text_field.text = str(task.period)
+        self.description_field.text_field.text = task.description
+        self.estimation_field.text_field.text = str(task.estimation)
+        self.task_type_drop_item.text = task.task_type_title
 
     async def _check_common_adding_part(self, *args):
         data = await self._get_task_forms_data()
@@ -197,22 +185,43 @@ class TasksLogScreenView(MDBottomNavigationItem):
         return False
 
     async def _check_adding_form_is_filled(self, *args):
-        complex_part = await self._check_complex_adding_part()
         common_part = await self._check_common_adding_part()
-        if not (complex_part and common_part):
-            Snackbar(text='Please, fill the fields [complex part, common_part]...').open()
+        if not common_part:
+            Snackbar(text='Please, fill the fields...').open()
             return False
         return True
+
+    async def edit_task_request(self, *args):
+        data = await self._get_task_forms_data()
+        filled = await self._check_adding_form_is_filled()
+        if filled:
+            item_id = self._cur_task.item_id
+            title = data['task_title']
+            deadline = parse(data['deadline'])
+            period = int(data['period']) if data['period'] else NO_PERIOD_VALUE
+            description = data['task_description']
+            estimation = int(data['task_estimation']) if data['task_estimation'] else 0
+            register_title = TASKS_DEFAULT_REGISTER
+            task_type_title = data['task_type']
+            complexity_title = self._cur_task.complexity_title
+
+            ak.start(
+                do_with_loading_modal_view(
+                    self.controller.edit_task,
+                    item_id, title, deadline, period, description, estimation, Statuses.IN_PROGRESS.value,
+                    register_title, task_type_title, complexity_title, data['units']
+                )
+            )
 
     async def add_task_request(self, *args):
         data = await self._get_task_forms_data()
         filled = await self._check_adding_form_is_filled()
         if filled:
             title = data['task_title']
-            deadline = parse(data['deadline'])
-            period = int(data['period'])
+            deadline = parse(data['deadline']) if data['deadline'] else datetime.datetime.today()
+            period = int(data['period']) if data['period'] else NO_PERIOD_VALUE
             description = data['task_description']
-            estimation = int(data['task_estimation'])
+            estimation = int(data['task_estimation']) if data['task_estimation'] else 0
             register_title = TASKS_DEFAULT_REGISTER
             task_type_title = data['task_type']
 

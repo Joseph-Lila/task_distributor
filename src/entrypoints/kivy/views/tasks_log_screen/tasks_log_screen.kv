@@ -7,6 +7,7 @@
     id: view
 
     tasks: tasks
+    operation_screen_manager: operation_screen_manager
     task_log_screen_manager: task_log_screen_manager
     drop_item: drop_item
     title_field: title_field
@@ -15,8 +16,6 @@
     description_field: description_field
     estimation_field: estimation_field
     task_type_drop_item: task_type_drop_item
-    common_title_field: common_title_field
-    measure_field: measure_field
 
     ScreenManager:
         id: task_log_screen_manager
@@ -141,27 +140,6 @@
                                         id: task_type_drop_item
                                         on_release: root.task_types_menu_for_cur_task.open()
 
-                            MDLabel:
-                                halign: 'center'
-                                pos_hint: {'center_x': .5, 'center_y': .5}
-                                text: 'Complex part'
-                                theme_text_color: "Custom"
-                                text_color: 204/255, 191/255, 0, 1
-                                font_style: 'H4'
-                                italic: True
-
-                            MyTextField:
-                                id: common_title_field
-                                hint_text: 'common title'
-                                icon: 'format-title'
-                                disabled: False
-
-                            MyTextField:
-                                id: measure_field
-                                hint_text: 'measure (items per min)'
-                                icon: 'tape-measure'
-                                disabled: False
-
                             AnchorLayout:
 
                                 MDIconButton:
@@ -171,6 +149,7 @@
                                     on_release: root.controller.go_to_units_screen()
 
                 ScreenManager:
+                    id: operation_screen_manager
                     size_hint_y: .15
 
                     MDScreen:
@@ -195,6 +174,29 @@
                                     md_bg_color: 0, 141/255, 142/255, 1
                                     on_release:
                                         ak.start(root.add_task_request())
+
+                    MDScreen:
+                        name: 'edit'
+
+                        BoxLayout:
+
+                            AnchorLayout:
+
+                                MDTextButton:
+                                    text: 'Cancel'
+                                    color: 204/255, 191/255, 0, 1
+                                    on_release:
+                                        root.controller.go_to_table_screen()
+
+                            AnchorLayout:
+
+                                MDFillRoundFlatButton:
+                                    text: 'Edit'
+                                    theme_text_color: "Custom"
+                                    text_color: 204/255, 191/255, 0, 1
+                                    md_bg_color: 0, 141/255, 142/255, 1
+                                    on_release:
+                                        ak.start(root.edit_task_request())
 
         MDScreen:
             name: 'units screen'

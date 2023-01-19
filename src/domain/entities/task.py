@@ -6,6 +6,9 @@ from src.domain.entities.base_entity import BaseEntity
 from src.domain.entities.unit import Unit
 
 
+NO_PERIOD_VALUE = -1
+
+
 @dataclass
 class Task(BaseEntity):
     """ Task entity. Some fields can be None. It depends on task type. """

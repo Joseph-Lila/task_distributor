@@ -17,4 +17,5 @@ class EditTask(Command):
     status_title: str
     register_title: str
     task_type_title: str
+    complexity_title: str
     units: Optional[List[Unit]]

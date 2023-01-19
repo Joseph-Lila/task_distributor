@@ -5,7 +5,6 @@ from typing import List
 from src.domain.entities.base_entity import BaseEntity
 from src.domain.entities.record import Record
 
-
 TASKS_DEFAULT_REGISTER = 'Tasks'
 
 
