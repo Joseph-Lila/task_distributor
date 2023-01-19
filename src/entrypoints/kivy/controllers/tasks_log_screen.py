@@ -1,9 +1,6 @@
-import asyncio
 import datetime
-import functools
 from typing import List, Optional
 
-import asynckivy as ak
 from kivy.clock import mainthread
 
 from src.domain.commands.allocate_tasks import AllocateTasks
@@ -14,7 +11,6 @@ from src.domain.commands.edit_task import EditTask
 from src.domain.commands.edit_task_unit import EditTaskUnit
 from src.domain.commands.get_all_tasks import GetAllTasks
 from src.domain.commands.get_tasks_by_type import GetTasksByType
-from src.domain.entities.complexity import Complexities
 from src.domain.entities.status import Statuses
 from src.domain.entities.task import Task
 from src.domain.entities.task_type import TaskTypes
