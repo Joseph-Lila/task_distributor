@@ -6,6 +6,7 @@ from src.domain.commands.allocate_tasks import AllocateTasks
 from src.domain.commands.command import Command
 from src.domain.commands.create_task import CreateTask
 from src.domain.commands.create_task_unit import CreateTaskUnit
+from src.domain.commands.delete_task import DeleteTask
 from src.domain.commands.edit_task import EditTask
 from src.domain.commands.edit_task_unit import EditTaskUnit
 from src.domain.commands.get_all_tasks import GetAllTasks
@@ -98,6 +99,17 @@ async def edit_task_unit(
         await uow.commit()
 
 
+async def delete_task(
+        cmd: DeleteTask,
+        uow: AbstractUnitOfWork,
+):
+    async with uow:
+        await uow.repository.delete_task(
+            cmd.task_id
+        )
+        await uow.commit()
+
+
 async def allocate_tasks(
         cmd: AllocateTasks,
         uow: AbstractUnitOfWork,
@@ -113,4 +125,5 @@ COMMAND_HANDLERS = {
     AllocateTasks: allocate_tasks,
     EditTask: edit_task,
     EditTaskUnit: edit_task_unit,
+    DeleteTask: delete_task,
 }  # type: Dict[Type[Command], Callable]

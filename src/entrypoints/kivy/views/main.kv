@@ -35,7 +35,7 @@
                     theme_text_color: "Custom"
                     text_color: 204/255, 191/255, 0, 1
                     md_bg_color: 189/255, 50/255, 47/255, 1
-                    on_press: print('delete')
+                    on_press: ak.start(root.parent.view.delete_task_request(root.item_id))
 
         GridLayout:
             cols: 1

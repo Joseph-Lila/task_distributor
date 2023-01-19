@@ -191,6 +191,14 @@ class TasksLogScreenView(MDBottomNavigationItem):
             return False
         return True
 
+    async def delete_task_request(self, item_id):
+        ak.start(
+            do_with_loading_modal_view(
+                self.controller.delete_task,
+                item_id,
+            )
+        )
+
     async def edit_task_request(self, *args):
         data = await self._get_task_forms_data()
         filled = await self._check_adding_form_is_filled()

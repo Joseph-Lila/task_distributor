@@ -9,6 +9,7 @@ from kivy.clock import mainthread
 from src.domain.commands.allocate_tasks import AllocateTasks
 from src.domain.commands.create_task import CreateTask
 from src.domain.commands.create_task_unit import CreateTaskUnit
+from src.domain.commands.delete_task import DeleteTask
 from src.domain.commands.edit_task import EditTask
 from src.domain.commands.edit_task_unit import EditTaskUnit
 from src.domain.commands.get_all_tasks import GetAllTasks
@@ -71,6 +72,23 @@ class TasksLogScreenController(AbstractController):
                         task_id=event.id
                     )
                 )
+        # allocate tasks
+        event: TasksAreAllocated = await self.bus.handle_command(
+            AllocateTasks()
+        )
+        # update tasks cards
+        if event:
+            self._view.update_tasks_cards_request()
+        self.go_to_table_screen()
+
+    @use_loop
+    async def delete_task(
+            self,
+            item_id,
+    ):
+        await self.bus.handle_command(
+            DeleteTask(item_id)
+        )
         # allocate tasks
         event: TasksAreAllocated = await self.bus.handle_command(
             AllocateTasks()
