@@ -141,6 +141,9 @@ class TasksLogScreenController(AbstractController):
         self._view.operation_screen_manager.current = 'add'
         self._view.task_log_screen_manager.current = 'tasks fields screen'
 
+    def back_to_tasks_fields_screen(self, *args):
+        self._view.task_log_screen_manager.current = 'tasks fields screen'
+
     def go_to_table_screen(self, *args):
         self._view.task_log_screen_manager.current = 'table'
         self._view.clear_task_form()

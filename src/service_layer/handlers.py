@@ -1,7 +1,5 @@
 from typing import Callable, Dict, Type
 
-from loguru import logger
-
 from src.domain.commands.allocate_tasks import AllocateTasks
 from src.domain.commands.command import Command
 from src.domain.commands.create_task import CreateTask

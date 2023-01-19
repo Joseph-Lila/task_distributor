@@ -12,7 +12,7 @@ from kivymd.uix.snackbar import Snackbar
 
 from src.domain.entities.register import TASKS_DEFAULT_REGISTER
 from src.domain.entities.status import Statuses
-from src.domain.entities.task import Task, NO_PERIOD_VALUE
+from src.domain.entities.task import NO_PERIOD_VALUE, Task
 from src.domain.entities.task_type import TaskTypes
 from src.entrypoints.kivy.controllers.abstract_controller import \
     do_with_loading_modal_view
