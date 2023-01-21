@@ -25,6 +25,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
         super().__init__(*args, **kwargs)
         self.task_types_menu = None
         self.task_types_menu_for_cur_task = None
+        self.statuses_menu_for_cur_task = None
         self.date_dialog = None
         self.adding_dialog = None
         self._tasks = []
@@ -34,6 +35,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
     def _init_view(self):
         ak.start(self._init_date_dialog())
         ak.start(self._add_drop_downs())
+        self.clear_task_form()
         self._update_current_tasks_type_request(TaskTypes.ALL.value)
 
     async def _init_date_dialog(self):
@@ -53,24 +55,34 @@ class TasksLogScreenView(MDBottomNavigationItem):
         raise ValueError('Impossible to edit task...')
 
     async def _add_drop_downs(self):
-        items = await self._get_task_types_menu_items()
+        task_type_items = await self._get_task_type_menu_items()
         self.task_types_menu = MDDropdownMenu(
             caller=self.drop_item,
-            items=items,
+            items=task_type_items,
             width_mult=4,
         )
 
-        items_for_current_task = await self._get_task_types_menu_items_for_cur_task()
+        task_type_items_for_current_task = await self._get_task_type_menu_items_for_cur_task()
         self.task_types_menu_for_cur_task = MDDropdownMenu(
             caller=self.task_type_drop_item,
-            items=items_for_current_task,
+            items=task_type_items_for_current_task,
+            width_mult=4,
+        )
+
+        status_items_for_current_task = await self._get_status_menu_items_for_cur_task()
+        self.statuses_menu_for_cur_task = MDDropdownMenu(
+            caller=self.status_drop_item,
+            items=status_items_for_current_task,
             width_mult=4,
         )
 
     def _update_task_type_for_cur_task(self, new_value):
         self.task_type_drop_item.text = new_value
 
-    async def _get_task_types_menu_items_for_cur_task(self):
+    def _update_status_for_cur_task(self, new_value):
+        self.status_drop_item.text = new_value
+
+    async def _get_task_type_menu_items_for_cur_task(self):
         ans = [
             {
                 "text": item.value,
@@ -81,7 +93,17 @@ class TasksLogScreenView(MDBottomNavigationItem):
         ans.pop(0)
         return ans
 
-    async def _get_task_types_menu_items(self):
+    async def _get_status_menu_items_for_cur_task(self):
+        ans = [
+            {
+                "text": item.value,
+                "viewclass": "OneLineListItem",
+                "on_release": lambda x=item.value: self._update_status_for_cur_task(x),
+            } for item in Statuses
+        ]
+        return ans
+
+    async def _get_task_type_menu_items(self):
         return [
             {
                 "text": item.value,
@@ -146,6 +168,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
             'period': self.period_field.text_field.text,
             'task_description': self.description_field.text_field.text,
             'task_estimation': self.estimation_field.text_field.text,
+            'status': self.status_drop_item.text,
             'task_type': self.task_type_drop_item.text,
         }
         return data
@@ -157,6 +180,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
         self.description_field.text_field.text = ''
         self.estimation_field.text_field.text = ''
         self.task_type_drop_item.text = ''
+        self._update_status_for_cur_task(Statuses.IN_PROGRESS.value)
 
     def fill_task_form(self, task: Task):
         self._cur_task = task
@@ -165,7 +189,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
         self.period_field.text_field.text = str(task.period)
         self.description_field.text_field.text = task.description
         self.estimation_field.text_field.text = str(task.estimation)
-        self.status_field.text_field.text = task.status_title
+        self._update_status_for_cur_task(task.status_title)
         self.task_type_drop_item.text = task.task_type_title
 
     async def _check_common_adding_part(self, *args):
@@ -210,12 +234,13 @@ class TasksLogScreenView(MDBottomNavigationItem):
             estimation = int(data['task_estimation']) if data['task_estimation'] else 0
             register_title = TASKS_DEFAULT_REGISTER
             task_type_title = data['task_type']
+            status_title = data['status']
             complexity_title = self._cur_task.complexity_title
 
             ak.start(
                 do_with_loading_modal_view(
                     self.controller.edit_task,
-                    item_id, title, deadline, period, description, estimation, Statuses.IN_PROGRESS.value,
+                    item_id, title, deadline, period, description, estimation, status_title,
                     register_title, task_type_title, complexity_title,
                 )
             )
@@ -230,12 +255,13 @@ class TasksLogScreenView(MDBottomNavigationItem):
             description = data['task_description']
             estimation = int(data['task_estimation']) if data['task_estimation'] else 0
             register_title = TASKS_DEFAULT_REGISTER
+            status = data['status']
             task_type_title = data['task_type']
 
             ak.start(
                 do_with_loading_modal_view(
                     self.controller.create_task,
-                    title, deadline, period, description, estimation, Statuses.IN_PROGRESS.value,
+                    title, deadline, period, description, estimation, status,
                     register_title, task_type_title,
                 )
             )

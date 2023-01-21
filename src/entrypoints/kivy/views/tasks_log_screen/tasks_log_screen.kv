@@ -15,7 +15,7 @@
     period_field: period_field
     description_field: description_field
     estimation_field: estimation_field
-    status_field: status_field
+    status_drop_item: status_drop_item
     task_type_drop_item: task_type_drop_item
 
     ScreenManager:
@@ -120,11 +120,26 @@
                                 input_filter: 'int'
                                 disabled: False
 
-                            MyTextField:
-                                id: status_field
-                                hint_text: 'status'
-                                icon: 'list-status'
-                                disabled: False
+                            BoxLayout:
+                                size_hint_y: None
+                                height: task_type_drop_item.height
+
+                                AnchorLayout:
+                                    size_hint_x: .45
+
+                                    MDLabel:
+                                        halign: 'center'
+                                        text: 'Status:'
+                                        theme_text_color: "Custom"
+                                        text_color: 204/255, 191/255, 0, 1
+                                        font_style: 'Button'
+                                        italic: True
+
+                                AnchorLayout:
+
+                                    MDDropDownItem:
+                                        id: status_drop_item
+                                        on_release: root.statuses_menu_for_cur_task.open()
 
                             BoxLayout:
                                 size_hint_y: None
