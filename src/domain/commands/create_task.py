@@ -1,9 +1,7 @@
 import datetime
 from dataclasses import dataclass
-from typing import List, Optional
 
 from src.domain.commands.command import Command
-from src.domain.entities.unit import Unit
 
 
 @dataclass

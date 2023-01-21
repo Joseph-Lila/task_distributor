@@ -140,7 +140,6 @@ class TasksLogScreenView(MDBottomNavigationItem):
                 await self.append_task_card(task)
 
     async def _get_task_forms_data(self):
-        units = None
         data = {
             'task_title': self.title_field.text_field.text,
             'deadline': self.date_field.text_field.text,
@@ -148,7 +147,6 @@ class TasksLogScreenView(MDBottomNavigationItem):
             'task_description': self.description_field.text_field.text,
             'task_estimation': self.estimation_field.text_field.text,
             'task_type': self.task_type_drop_item.text,
-            'units': units,
         }
         return data
 
@@ -167,6 +165,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
         self.period_field.text_field.text = str(task.period)
         self.description_field.text_field.text = task.description
         self.estimation_field.text_field.text = str(task.estimation)
+        self.status_field.text_field.text = task.status_title
         self.task_type_drop_item.text = task.task_type_title
 
     async def _check_common_adding_part(self, *args):
@@ -217,7 +216,7 @@ class TasksLogScreenView(MDBottomNavigationItem):
                 do_with_loading_modal_view(
                     self.controller.edit_task,
                     item_id, title, deadline, period, description, estimation, Statuses.IN_PROGRESS.value,
-                    register_title, task_type_title, complexity_title, data['units']
+                    register_title, task_type_title, complexity_title,
                 )
             )
 
@@ -237,6 +236,6 @@ class TasksLogScreenView(MDBottomNavigationItem):
                 do_with_loading_modal_view(
                     self.controller.create_task,
                     title, deadline, period, description, estimation, Statuses.IN_PROGRESS.value,
-                    register_title, task_type_title, data['units']
+                    register_title, task_type_title,
                 )
             )

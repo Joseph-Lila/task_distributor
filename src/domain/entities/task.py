@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from typing import List, Optional, Union
 
 from src.domain.entities.base_entity import BaseEntity
-from src.domain.entities.unit import Unit
 
 NO_PERIOD_VALUE = -1
 
@@ -21,4 +20,3 @@ class Task(BaseEntity):
     complexity_title: str
     register_title: str
     task_type_title: str
-    units: Optional[List[Unit]]

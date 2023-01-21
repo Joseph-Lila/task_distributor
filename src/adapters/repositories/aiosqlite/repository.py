@@ -5,7 +5,6 @@ from dateutil.parser import parse
 from src.adapters.repositories.abstract_repository import AbstractRepository
 from src.domain.entities.complexity import Complexities
 from src.domain.entities.task import Task
-from src.domain.entities.unit import Unit
 
 
 class AiosqliteRepository(AbstractRepository):
@@ -30,14 +29,13 @@ class AiosqliteRepository(AbstractRepository):
         tasks = []
         for task_row in task_rows:
             task_id = task_row[0]
-            units = await self.get_task_units(task_id)
             tasks.append(
                 Task(
                     item_id=task_row[0], title=task_row[1], deadline=parse(task_row[2]),
                     period=task_row[3], place=task_row[4], description=task_row[5],
                     estimation=task_row[6], status_title=task_row[7],
                     complexity_title=task_row[8], register_title=task_row[9],
-                    task_type_title=task_row[10], units=units
+                    task_type_title=task_row[10]
                 )
             )
         return tasks
@@ -61,14 +59,13 @@ class AiosqliteRepository(AbstractRepository):
         tasks = []
         for task_row in task_rows:
             task_id = task_row[0]
-            units = await self.get_task_units(task_id)
             tasks.append(
                 Task(
                     item_id=task_row[0], title=task_row[1], deadline=parse(task_row[2]),
                     period=task_row[3], place=task_row[4], description=task_row[5],
                     estimation=task_row[6], status_title=task_row[7],
                     complexity_title=task_row[8], register_title=task_row[9],
-                    task_type_title=task_row[10], units=units
+                    task_type_title=task_row[10]
                 )
             )
         return tasks
@@ -90,18 +87,6 @@ class AiosqliteRepository(AbstractRepository):
             (title, deadline, period, description, estimation, status_id, complexity_id, register_id, task_type_id)
         )
         return cursor.lastrowid
-
-    async def create_task_unit(self, estimation, status_title, task_id) -> None:
-        status_id = await self.get_status_id_by_status_title(status_title)
-
-        if not status_id:
-            raise ValueError('Cannot get id by title...')
-        await self.session.execute(
-            "INSERT INTO units "
-            "(estimation, status_id, task_id) "
-            "VALUES (?, ?, ?);",
-            (estimation, status_id, task_id)
-        )
 
     async def delete_task(self, task_id) -> None:
         await self.session.execute(
@@ -143,8 +128,7 @@ class AiosqliteRepository(AbstractRepository):
         task_row = await cursor.fetchone()
         if task_row:
             task_id = task_row[0]
-            units = await self.get_task_units(task_id)
-            return Task(*task_row, units=units)
+            return Task(*task_row)
 
     async def get_actual_task(self, current_task_place=None) -> Optional[Task]:
         if current_task_place is None:
@@ -213,43 +197,3 @@ class AiosqliteRepository(AbstractRepository):
         task_type_id = await cursor.fetchone()
         if task_type_id:
             return task_type_id[0]
-
-    async def get_task_units(self, task_id) -> Optional[List[Unit]]:
-        cursor = await self.session.execute(
-            "SELECT * "
-            "FROM units "
-            "WHERE task_id = ?;",
-            (task_id,)
-        )
-        task_unit_rows = await cursor.fetchall()
-        if not task_unit_rows:
-            return None
-        task_units = []
-        for task_unit_row in task_unit_rows:
-            task_units.append(Unit(*task_unit_row))
-        return task_units
-
-    async def add_task_unit(self, estimation, status_title, task_id) -> None:
-        status_id = await self.get_status_id_by_status_title(status_title)
-        await self.session.execute(
-            "INSERT INTO units "
-            "(estimation, status_id, task_id) "
-            "VALUES (?, ?, ?);",
-            (estimation, status_id, task_id)
-        )
-
-    async def edit_task_unit(self, task_unit_id, estimation, status_title) -> None:
-        status_id = await self.get_status_id_by_status_title(status_title)
-        await self.session.execute(
-            "UPDATE units "
-            "SET estimation = ?, status_id = ? "
-            "WHERE id = ?",
-            (estimation, status_id, task_unit_id)
-        )
-
-    async def delete_task_unit(self, task_unit_id) -> None:
-        await self.session.execute(
-            "DELETE FROM units "
-            "WHERE id = ?;",
-            (task_unit_id,)
-        )

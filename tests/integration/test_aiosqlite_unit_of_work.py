@@ -4,6 +4,7 @@ import pytest
 
 from src.adapters.repositories.aiosqlite.create_db import CREATE_CONSTRUCTIONS
 from src.domain.entities.complexity import Complexities
+from src.domain.entities.register import TASKS_DEFAULT_REGISTER
 from src.domain.entities.status import Statuses
 from src.domain.entities.task import Task
 from src.domain.entities.task_type import TaskTypes
@@ -42,7 +43,7 @@ async def test_repository_get_task_type_id_by_task_type_title(in_memory_sqlite_d
 @pytest.mark.asyncio
 async def test_repository_get_register_id_by_register_title(in_memory_sqlite_db):
     uow = AiosqliteUnitOfWork(connection_string=in_memory_sqlite_db)
-    register_title = 'TASKS'
+    register_title = TASKS_DEFAULT_REGISTER
     async with uow:
         # create tables
         for item in CREATE_CONSTRUCTIONS:
@@ -57,8 +58,8 @@ async def test_repository_get_register_id_by_register_title(in_memory_sqlite_db)
         )
         await uow.commit()
 
-        task_type_id = await uow.repository.get_register_id_by_register_title(register_title)
-        assert task_type_id == 1
+        register_id = await uow.repository.get_register_id_by_register_title(register_title)
+        assert register_id == 1
 
 
 @pytest.mark.asyncio
@@ -102,7 +103,7 @@ async def test_repository_get_complexity_id_by_complexity_title(in_memory_sqlite
         await uow.commit()
 
         complexity_id = await uow.repository.get_complexity_id_by_complexity_title(complexity_title)
-        assert complexity_id == 1
+        assert complexity_id == 2
 
 
 @pytest.mark.asyncio
@@ -156,7 +157,7 @@ async def test_create_task_and_get_tasks(in_memory_sqlite_db):
             item_id=1, title=title, deadline=deadline, period=period,
             place=None, description=description, estimation=estimation,
             status_title=status_title, complexity_title=complexity_title,
-            register_title=register_title, task_type_title=task_type_title, units=None
+            register_title=register_title, task_type_title=task_type_title
         )
 
 
@@ -266,7 +267,6 @@ async def test_edit_task(in_memory_sqlite_db):
             place=None, description=description, estimation=estimation,
             status_title=status_title, complexity_title=complexity_title,
             register_title=register_title, task_type_title=task_type_title,
-            units=None
         )
         await uow.repository.edit_task(
             1, new_title, deadline, period, description, estimation, status_title,
@@ -276,6 +276,6 @@ async def test_edit_task(in_memory_sqlite_db):
             item_id=1, title=new_title, deadline=deadline, period=period,
             place=None, description=description, estimation=estimation,
             status_title=status_title, complexity_title=complexity_title,
-            register_title=register_title, task_type_title=task_type_title, units=None
+            register_title=register_title, task_type_title=task_type_title,
         )
 

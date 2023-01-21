@@ -15,6 +15,7 @@
     period_field: period_field
     description_field: description_field
     estimation_field: estimation_field
+    status_field: status_field
     task_type_drop_item: task_type_drop_item
 
     ScreenManager:
@@ -119,6 +120,12 @@
                                 input_filter: 'int'
                                 disabled: False
 
+                            MyTextField:
+                                id: status_field
+                                hint_text: 'status'
+                                icon: 'list-status'
+                                disabled: False
+
                             BoxLayout:
                                 size_hint_y: None
                                 height: task_type_drop_item.height
@@ -139,14 +146,6 @@
                                     MDDropDownItem:
                                         id: task_type_drop_item
                                         on_release: root.task_types_menu_for_cur_task.open()
-
-                            AnchorLayout:
-
-                                MDIconButton:
-                                    icon: 'shield-moon-outline'
-                                    theme_icon_color: "Custom"
-                                    icon_color: 0, 141/255, 142/255, 1
-                                    on_release: root.controller.go_to_units_screen()
 
                 ScreenManager:
                     id: operation_screen_manager
@@ -197,18 +196,3 @@
                                     md_bg_color: 0, 141/255, 142/255, 1
                                     on_release:
                                         ak.start(root.edit_task_request())
-
-        MDScreen:
-            name: 'units screen'
-
-            BoxLayout:
-                orientation: 'vertical'
-
-                AnchorLayout:
-                    size_hint_y: .15
-
-                    MDIconButton:
-                        icon: 'door'
-                        on_release: root.controller.back_to_tasks_fields_screen()
-
-                MDCard:

@@ -2,7 +2,6 @@ import abc
 from typing import List, Optional
 
 from src.domain.entities.task import Task
-from src.domain.entities.unit import Unit
 
 
 class AbstractRepository(abc.ABC):
@@ -20,15 +19,6 @@ class AbstractRepository(abc.ABC):
             self, title, deadline, period, description, estimation,
             status_title, register_title, task_type_title,
     ) -> int:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def create_task_unit(
-            self,
-            estimation,
-            status_title,
-            task_id,
-    ) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -66,22 +56,6 @@ class AbstractRepository(abc.ABC):
 
     @abc.abstractmethod
     async def get_complexity_id_by_complexity_title(self, complexity_title) -> Optional[int]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get_task_units(self, task_id) -> Optional[List[Unit]]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def add_task_unit(self, estimation, status_title, task_id) -> None:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def edit_task_unit(self, task_unit_id, estimation, status_title) -> None:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def delete_task_unit(self, task_unit_id) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
