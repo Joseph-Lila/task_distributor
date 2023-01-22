@@ -61,3 +61,7 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     async def get_task_py_place(self, place) -> Optional[Task]:
         raise NotImplementedError
+
+    @abc.abstractmethod
+    async def change_place_and_complexity(self, task_id, place, complexity_title):
+        raise NotImplementedError

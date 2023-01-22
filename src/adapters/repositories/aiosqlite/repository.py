@@ -197,3 +197,12 @@ class AiosqliteRepository(AbstractRepository):
         task_type_id = await cursor.fetchone()
         if task_type_id:
             return task_type_id[0]
+
+    async def change_place_and_complexity(self, task_id, place, complexity_title):
+        complexity_id = await self.get_complexity_id_by_complexity_title(complexity_title)
+        await self.session.execute(
+            "UPDATE tasks "
+            "SET place = ?, complexity_id = ? "
+            "WHERE id = ?",
+            (place, complexity_id, task_id)
+        )

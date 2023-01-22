@@ -5,6 +5,8 @@ from typing import List, Optional, Union
 from src.domain.entities.base_entity import BaseEntity
 
 NO_PERIOD_VALUE = -1
+DAY_START = datetime.time(hour=4, minute=0)
+DAY_END = datetime.time(hour=22, minute=0)
 
 
 @dataclass
