@@ -7,11 +7,13 @@ from src.domain.commands.create_task import CreateTask
 from src.domain.commands.delete_task import DeleteTask
 from src.domain.commands.edit_task import EditTask
 from src.domain.commands.get_all_tasks import GetAllTasks
+from src.domain.commands.get_main_task import GetMainTask
 from src.domain.commands.get_tasks_by_type import GetTasksByType
 from src.domain.entities.complexity import Complexities
 from src.domain.entities.task import Task, DAY_END, DAY_START
 from src.domain.entities.task_type import TaskTypes
 from src.domain.events.got_all_tasks import GotAllTasks
+from src.domain.events.got_main_task import GotMainTask
 from src.domain.events.task_is_created import TaskIsCreated
 from src.domain.events.task_is_edited import TaskIsEdited
 from src.domain.events.tasks_are_allocated import TasksAreAllocated
@@ -35,6 +37,15 @@ async def get_tasks_by_type(
     async with uow:
         tasks = await uow.repository.get_tasks_by_type(cmd.status_title)
     return GotAllTasks(tasks)
+
+
+async def get_actual_task(
+        cmd: GetMainTask,
+        uow: AbstractUnitOfWork,
+):
+    async with uow:
+        main_task: Task = await uow.repository.get_actual_task(cmd.current_task_place)
+    return GotMainTask(main_task)
 
 
 async def create_task(
@@ -176,4 +187,5 @@ COMMAND_HANDLERS = {
     AllocateTasks: allocate_tasks,
     EditTask: edit_task,
     DeleteTask: delete_task,
+    GetMainTask: get_actual_task,
 }  # type: Dict[Type[Command], Callable]

@@ -13,7 +13,7 @@ class MainTaskScreenView(MDBottomNavigationItem):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._tap_target_view = None
-        self._current_task: Optional[Task] = None
+        self.current_task: Optional[Task] = None
         self._current_negative_task: Optional[Task] = None
         self._init_view()
 
@@ -60,9 +60,9 @@ class MainTaskScreenView(MDBottomNavigationItem):
             self.skip_btn.disabled = True
             self.accept_btn.disabled = True
         else:
-            self._current_task = cur_task
+            self.current_task = cur_task
             self._tap_target_view.title_text = cur_task.title
-            self._tap_target_view.description_text = cur_task.description
+            self._tap_target_view.description_text = cur_task.description if cur_task.description else 'Empty...'
             self.cur_task_title.text = cur_task.title
             self.more_button.disabled = False
             self.froze_btn.disabled = False

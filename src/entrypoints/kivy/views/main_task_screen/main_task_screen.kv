@@ -1,3 +1,6 @@
+#: import ak asynckivy
+
+
 <MainTaskScreenView>:
     icon: 'shield-bug-outline'
     text: 'Main Page'
@@ -110,6 +113,7 @@
                         md_bg_color: 204/255, 191/255, 0, .3
                         theme_icon_color: "Custom"
                         icon_color: 76/255, 31/255, 124/255, 1
+                        on_release: ak.start(root.controller.get_main_task(root.current_task.place))
 
                 AnchorLayout:
 
