@@ -1,5 +1,6 @@
 from typing import Optional
 
+import asynckivy as ak
 from kivy.properties import ObjectProperty
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
 from kivymd.uix.taptargetview import MDTapTargetView
@@ -16,6 +17,9 @@ class MainTaskScreenView(MDBottomNavigationItem):
         self.current_task: Optional[Task] = None
         self._current_negative_task: Optional[Task] = None
         self._init_view()
+
+    def on_enter(self, *args):
+        ak.start(self.controller.get_main_task())
 
     def _init_view(self):
         self._tap_target_view = MDTapTargetView(

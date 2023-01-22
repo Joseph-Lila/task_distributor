@@ -1,20 +1,16 @@
 import datetime
-from typing import List, Optional
 
 from kivy.clock import mainthread
 
-from src.domain.commands.allocate_tasks import AllocateTasks
 from src.domain.commands.create_task import CreateTask
 from src.domain.commands.delete_task import DeleteTask
 from src.domain.commands.edit_task import EditTask
 from src.domain.commands.get_all_tasks import GetAllTasks
 from src.domain.commands.get_tasks_by_type import GetTasksByType
-from src.domain.entities.status import Statuses
 from src.domain.entities.task import Task
 from src.domain.entities.task_type import TaskTypes
 from src.domain.events.task_is_created import TaskIsCreated
 from src.domain.events.task_is_edited import TaskIsEdited
-from src.domain.events.tasks_are_allocated import TasksAreAllocated
 from src.entrypoints.kivy.controllers.abstract_controller import (
     AbstractController, use_loop)
 from src.entrypoints.kivy.views.tasks_log_screen.tasks_log_screen import \
@@ -55,10 +51,6 @@ class TasksLogScreenController(AbstractController):
                 status_title, register_title, task_type_title
             )
         )
-        # allocate tasks
-        event: TasksAreAllocated = await self.bus.handle_command(
-            AllocateTasks()
-        )
         # update tasks cards
         if event:
             self._view.update_tasks_cards_request()
@@ -72,13 +64,8 @@ class TasksLogScreenController(AbstractController):
         await self.bus.handle_command(
             DeleteTask(item_id)
         )
-        # allocate tasks
-        event: TasksAreAllocated = await self.bus.handle_command(
-            AllocateTasks()
-        )
         # update tasks cards
-        if event:
-            self._view.update_tasks_cards_request()
+        self._view.update_tasks_cards_request()
         self.go_to_table_screen()
 
     @use_loop
@@ -92,10 +79,6 @@ class TasksLogScreenController(AbstractController):
                 item_id, title, deadline, period, description, estimation,
                 status_title, register_title, task_type_title, complexity_title,
             )
-        )
-        # allocate tasks
-        event: TasksAreAllocated = await self.bus.handle_command(
-            AllocateTasks()
         )
         # update tasks cards
         if event:

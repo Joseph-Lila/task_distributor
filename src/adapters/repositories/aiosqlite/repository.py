@@ -146,7 +146,7 @@ class AiosqliteRepository(AbstractRepository):
         await self.session.execute(
             "UPDATE tasks "
             "SET status_id = ? "
-            "WHERE id = ?",
+            "WHERE id = ?;",
             (status_id, task_id)
         )
 

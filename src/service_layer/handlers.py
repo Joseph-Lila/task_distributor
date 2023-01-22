@@ -1,5 +1,5 @@
 import datetime
-from typing import Callable, Dict, Type, List
+from typing import Callable, Dict, List, Type
 
 from src.domain.commands.allocate_tasks import AllocateTasks
 from src.domain.commands.command import Command
@@ -9,8 +9,11 @@ from src.domain.commands.edit_task import EditTask
 from src.domain.commands.get_all_tasks import GetAllTasks
 from src.domain.commands.get_main_task import GetMainTask
 from src.domain.commands.get_tasks_by_type import GetTasksByType
+from src.domain.commands.mark_task_as_done import MarkTaskAsDone
+from src.domain.commands.mark_task_as_frozen import MarkTaskAsFrozen
 from src.domain.entities.complexity import Complexities
-from src.domain.entities.task import Task, DAY_END, DAY_START
+from src.domain.entities.status import Statuses
+from src.domain.entities.task import DAY_END, DAY_START, Task
 from src.domain.entities.task_type import TaskTypes
 from src.domain.events.got_all_tasks import GotAllTasks
 from src.domain.events.got_main_task import GotMainTask
@@ -147,26 +150,26 @@ async def allocate_tasks(
         cmd: AllocateTasks,
         uow: AbstractUnitOfWork,
 ):
-    print('Allocate')
     async with uow:
         all_tasks = await uow.repository.get_all_tasks()
-    without_negative_tasks = [
+    # get suitable tasks
+    suitable_tasks = [
         task for task in all_tasks
         if task.task_type_title not in [
             TaskTypes.NEGATIVE.value,
             TaskTypes.NEGATIVE_WITH_PERIOD.value,
-        ]
+        ] and task.status_title == Statuses.IN_PROGRESS.value
     ]
+    # allocate places between them
     place = 1
     total_minutes_to_complete_tasks_before_cur = 0
-    while without_negative_tasks:
-        the_hottest_one_index = await get_hottest_task_index(without_negative_tasks)
-        the_hottest_one = without_negative_tasks.pop(the_hottest_one_index)
+    while suitable_tasks:
+        the_hottest_one_index = await get_hottest_task_index(suitable_tasks)
+        the_hottest_one = suitable_tasks.pop(the_hottest_one_index)
         urgency = await get_urgency(
             the_hottest_one.deadline,
             total_minutes_to_complete_tasks_before_cur + the_hottest_one.estimation,
         )
-        print(urgency)
         complexity_title = await define_complexity(urgency)
         async with uow:
             await uow.repository.change_place_and_complexity(
@@ -177,7 +180,47 @@ async def allocate_tasks(
             await uow.commit()
         place += 1
         total_minutes_to_complete_tasks_before_cur += the_hottest_one.estimation
+    # for other set places to None and set complexities to UNDEFINED
+    unsuitable_tasks = [
+        task for task in all_tasks
+        if not (task.task_type_title not in [
+            TaskTypes.NEGATIVE.value,
+            TaskTypes.NEGATIVE_WITH_PERIOD.value,
+        ] and task.status_title == Statuses.IN_PROGRESS.value)
+    ]
+    for task in unsuitable_tasks:
+        async with uow:
+            await uow.repository.change_place_and_complexity(
+                task_id=task.item_id,
+                place=None,
+                complexity_title=Complexities.UNDEFINED.value,
+            )
+            await uow.commit()
     return TasksAreAllocated()
+
+
+async def mark_task_as_done(
+        cmd: MarkTaskAsDone,
+        uow: AbstractUnitOfWork,
+):
+    async with uow:
+        await uow.repository.change_task_status(
+            cmd.task_id,
+            Statuses.DONE.value,
+        )
+        await uow.commit()
+
+
+async def mark_task_as_frozen(
+        cmd: MarkTaskAsFrozen,
+        uow: AbstractUnitOfWork,
+):
+    async with uow:
+        await uow.repository.change_task_status(
+            cmd.task_id,
+            Statuses.FROZEN.value,
+        )
+        await uow.commit()
 
 
 COMMAND_HANDLERS = {
@@ -188,4 +231,6 @@ COMMAND_HANDLERS = {
     EditTask: edit_task,
     DeleteTask: delete_task,
     GetMainTask: get_actual_task,
+    MarkTaskAsFrozen: mark_task_as_frozen,
+    MarkTaskAsDone: mark_task_as_done,
 }  # type: Dict[Type[Command], Callable]

@@ -15,11 +15,6 @@ class MainScreenController(AbstractController):
     def get_view(self):
         return self._view
 
-    async def hard_operation(self, *args, **kwargs):
-        print('start')
-        # await ak.sleep(3)
-        print('end')
-
     @mainthread
     def _init_manipulations(self, *args):
-        ak.start(do_with_loading_modal_view(self.hard_operation, self))
+        pass

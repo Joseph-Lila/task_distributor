@@ -103,6 +103,7 @@
                         md_bg_color: 204/255, 191/255, 0, .3
                         theme_icon_color: "Custom"
                         icon_color: 66/255, 170/255, 1, 1
+                        on_release: ak.start(root.controller.mark_task_as_frozen(root.current_task.item_id))
 
                 AnchorLayout:
 
@@ -124,3 +125,4 @@
                         md_bg_color: 204/255, 191/255, 0, .3
                         theme_icon_color: "Custom"
                         icon_color: 0, 141/255, 142/255, 1
+                        on_release: ak.start(root.controller.mark_task_as_done(root.current_task.item_id))
