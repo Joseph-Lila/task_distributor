@@ -7,7 +7,7 @@ from src.entrypoints.kivy.screens import ScreenGenerator
 
 class KivyApp(MDApp):
     title = 'Task Distributor'
-    icon = 'assets/images/icon.jpeg'
+    icon = 'assets/images/icon.jpg'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
