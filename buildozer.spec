@@ -16,13 +16,13 @@ source.dir = src/entrypoints/kivy
 source.include_exts = py,png,jpg,kv,atlas,db
 
 # (list) List of inclusions using pattern matching
-source.include_patterns = assets/*,src/*
+source.include_patterns = ../../../assets/*,../../../src/*
 
 # (list) Source files to exclude (let empty to not exclude anything)
 #source.exclude_exts = spec,txt,bat,ini,md
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-source.exclude_dirs = tests, bin, venv
+source.exclude_dirs = ../../../tests, ../../../bin, ../../../venv
 
 # (list) List of exclusions using pattern matching
 # Do not prefix with './'
@@ -47,7 +47,7 @@ requirements = python3,kivy==2.1.0,loguru,aiosqlite==0.17.0,kivymd==1.1.1,asynck
 #presplash.filename = %(source.dir)s/data/presplash.png
 
 # (str) Icon of the application
-icon.filename = assets/images/icon.jpg
+icon.filename = ../../../assets/images/icon.jpg
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse or landscape-reverse
