@@ -19,6 +19,9 @@ class MainTaskScreenView(MDBottomNavigationItem):
         self._init_view()
 
     def on_enter(self, *args):
+        ak.start(self.controller.setup_tasks())
+        ak.start(self.update_negative_task())
+        ak.start(self.update_negative_tasks_quantity())
         ak.start(self.controller.get_main_task())
 
     def _init_view(self):

@@ -35,6 +35,8 @@ class TasksLogScreenView(MDBottomNavigationItem):
     def _init_view(self):
         ak.start(self._init_date_dialog())
         ak.start(self._add_drop_downs())
+
+    def on_enter(self, *args):
         self.clear_task_form()
         self._update_current_tasks_type_request(TaskTypes.ALL.value)
 

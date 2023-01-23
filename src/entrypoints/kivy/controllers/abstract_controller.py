@@ -2,7 +2,6 @@ import abc
 import asyncio
 import functools
 
-from kivy.clock import mainthread
 from kivy.factory import Factory
 
 
@@ -28,9 +27,4 @@ def use_loop(func):
 
 
 class AbstractController(abc.ABC):
-    def __init__(self):
-        self._init_manipulations()
-
-    @mainthread
-    def _init_manipulations(self, *args):
-        raise NotImplementedError
+    pass

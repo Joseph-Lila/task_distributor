@@ -5,6 +5,7 @@ from src.domain.commands.allocate_tasks import AllocateTasks
 from src.domain.commands.get_main_task import GetMainTask
 from src.domain.commands.mark_task_as_done import MarkTaskAsDone
 from src.domain.commands.mark_task_as_frozen import MarkTaskAsFrozen
+from src.domain.commands.setup_tasks import SetupTasks
 from src.domain.events.got_main_task import GotMainTask
 from src.domain.events.tasks_are_allocated import TasksAreAllocated
 from src.entrypoints.kivy.controllers.abstract_controller import (
@@ -17,7 +18,6 @@ class MainTaskScreenController(AbstractController):
     def __init__(self, bus):
         self.bus = bus
         self._view = MainTaskScreenView(controller=self)
-        super().__init__()
 
     def get_view(self):
         return self._view
@@ -44,7 +44,8 @@ class MainTaskScreenController(AbstractController):
         )
         await self.get_main_task()
 
-    @mainthread
-    def _init_manipulations(self, *args):
-        ak.start(self._view.update_negative_task())
-        ak.start(self._view.update_negative_tasks_quantity())
+    @use_loop
+    async def setup_tasks(self):
+        await self.bus.handle_command(
+            SetupTasks()
+        )

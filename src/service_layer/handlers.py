@@ -11,9 +11,10 @@ from src.domain.commands.get_main_task import GetMainTask
 from src.domain.commands.get_tasks_by_type import GetTasksByType
 from src.domain.commands.mark_task_as_done import MarkTaskAsDone
 from src.domain.commands.mark_task_as_frozen import MarkTaskAsFrozen
+from src.domain.commands.setup_tasks import SetupTasks
 from src.domain.entities.complexity import Complexities
 from src.domain.entities.status import Statuses
-from src.domain.entities.task import DAY_END, DAY_START, Task
+from src.domain.entities.task import DAY_END, DAY_START, Task, NO_PERIOD_VALUE
 from src.domain.entities.task_type import TaskTypes
 from src.domain.events.got_all_tasks import GotAllTasks
 from src.domain.events.got_main_task import GotMainTask
@@ -223,6 +224,56 @@ async def mark_task_as_frozen(
         await uow.commit()
 
 
+async def setup_tasks(
+        cmd: SetupTasks,
+        uow: AbstractUnitOfWork,
+):
+    # get all the tasks
+    async with uow:
+        tasks = await uow.repository.get_all_tasks()
+
+    old_tasks = [
+        task for task in tasks
+        if task.deadline < datetime.datetime.now() and task.status_title == Statuses.IN_PROGRESS.value
+    ]
+    for task in old_tasks:
+        # delete it
+        async with uow:
+            await uow.repository.delete_task(
+                task.item_id,
+            )
+            await uow.commit()
+        # if there is a period let's create new one
+        if task.period != NO_PERIOD_VALUE and task.task_type_title in [
+            TaskTypes.NEGATIVE_WITH_PERIOD.value,
+            TaskTypes.COMMON_WITH_PERIOD.value,
+        ]:
+            new_deadline = await calculate_next_deadline(
+                task.deadline,
+                task.period,
+            )
+            cmd_to_create = CreateTask(
+                task_type_title=task.task_type_title,
+                period=task.period,
+                deadline=new_deadline,
+                estimation=task.estimation,
+                description=task.description,
+                status_title=Statuses.IN_PROGRESS.value,
+                register_title=task.register_title,
+                title=task.title,
+            )
+            await create_task(cmd_to_create, uow)
+
+
+async def calculate_next_deadline(
+        deadline: datetime.datetime,
+        period: int,
+):
+    while deadline <= datetime.datetime.now():
+        deadline += datetime.timedelta(days=period)
+    return deadline
+
+
 COMMAND_HANDLERS = {
     CreateTask: create_task,
     GetAllTasks: get_all_tasks,
@@ -233,4 +284,5 @@ COMMAND_HANDLERS = {
     GetMainTask: get_actual_task,
     MarkTaskAsFrozen: mark_task_as_frozen,
     MarkTaskAsDone: mark_task_as_done,
+    SetupTasks: setup_tasks,
 }  # type: Dict[Type[Command], Callable]

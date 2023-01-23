@@ -1,7 +1,5 @@
 import datetime
 
-from kivy.clock import mainthread
-
 from src.domain.commands.create_task import CreateTask
 from src.domain.commands.delete_task import DeleteTask
 from src.domain.commands.edit_task import EditTask
@@ -21,7 +19,6 @@ class TasksLogScreenController(AbstractController):
     def __init__(self, bus):
         self.bus = bus
         self._view = TasksLogScreenView(controller=self)
-        super().__init__()
 
     def get_view(self):
         return self._view
@@ -84,10 +81,6 @@ class TasksLogScreenController(AbstractController):
         if event:
             self._view.update_tasks_cards_request()
         self.go_to_table_screen()
-
-    @mainthread
-    def _init_manipulations(self, *args):
-        pass
 
     @staticmethod
     async def get_available_task_types():
