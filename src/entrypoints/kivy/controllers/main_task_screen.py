@@ -1,8 +1,5 @@
 import datetime
 
-import asynckivy as ak
-from kivy.clock import mainthread
-
 from src.domain.commands.allocate_tasks import AllocateTasks
 from src.domain.commands.get_main_task import GetMainTask
 from src.domain.commands.get_tasks_by_type import GetTasksByType
@@ -12,7 +9,6 @@ from src.domain.commands.setup_tasks import SetupTasks
 from src.domain.entities.task_type import TaskTypes
 from src.domain.events.got_all_tasks import GotAllTasks
 from src.domain.events.got_main_task import GotMainTask
-from src.domain.events.tasks_are_allocated import TasksAreAllocated
 from src.entrypoints.kivy.controllers.abstract_controller import (
     AbstractController, use_loop)
 from src.entrypoints.kivy.views.main_task_screen.main_task_screen import \

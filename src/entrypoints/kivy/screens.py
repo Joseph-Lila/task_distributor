@@ -2,10 +2,6 @@ from src.bootstrap import bootstrap
 from src.entrypoints.kivy.controllers.main_screen import MainScreenController
 from src.entrypoints.kivy.controllers.main_task_screen import \
     MainTaskScreenController
-from src.entrypoints.kivy.controllers.settings_screen import \
-    SettingsScreenController
-from src.entrypoints.kivy.controllers.statistics_screen import \
-    StatisticsScreenController
 from src.entrypoints.kivy.controllers.tasks_log_screen import \
     TasksLogScreenController
 

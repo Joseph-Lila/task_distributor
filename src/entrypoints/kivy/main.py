@@ -1,11 +1,8 @@
 import asyncio
 
-from kivy.core.window import Window
 from kivymd.app import MDApp
 
 from src.entrypoints.kivy.screens import ScreenGenerator
-
-Window.size = (400, 600)
 
 
 class KivyApp(MDApp):

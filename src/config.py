@@ -1,4 +1,4 @@
-""" Module sre """
+""" Module srс """
 import pathlib
 
 THIS_DIR = pathlib.Path(__file__).parent.resolve().absolute()
