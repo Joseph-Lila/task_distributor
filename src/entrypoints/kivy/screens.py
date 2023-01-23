@@ -13,8 +13,8 @@ SCREENS = {
     "main screen": MainScreenController,
     "main task screen": MainTaskScreenController,
     "tasks log screen": TasksLogScreenController,
-    "statistics screen": StatisticsScreenController,
-    "settings screen": SettingsScreenController,
+    # "statistics screen": StatisticsScreenController,
+    # "settings screen": SettingsScreenController,
 }
 
 

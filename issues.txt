@@ -1,0 +1,5 @@
+1. Special tasks are like common. It should be changed.
+2. Info button for negative tasks doesn't work.
+3. Settings page + Statistics page don't exist.
+4. Deadline measures in days, the program indifferent for time (only dates).
+5. Tasks have register_title as field but they don't to.

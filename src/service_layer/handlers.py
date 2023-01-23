@@ -204,12 +204,35 @@ async def mark_task_as_done(
         cmd: MarkTaskAsDone,
         uow: AbstractUnitOfWork,
 ):
+    # get task
     async with uow:
-        await uow.repository.change_task_status(
-            cmd.task_id,
-            Statuses.DONE.value,
+        task = await uow.repository.get_by_id(cmd.task_id)
+    # delete it
+    async with uow:
+        await uow.repository.delete_task(
+            task.item_id,
         )
         await uow.commit()
+    # if there is a period let's create new one
+    if task.period != NO_PERIOD_VALUE and task.task_type_title in [
+        TaskTypes.NEGATIVE_WITH_PERIOD.value,
+        TaskTypes.COMMON_WITH_PERIOD.value,
+    ]:
+        new_deadline = await calculate_next_deadline(
+            task.deadline,
+            task.period,
+        )
+        cmd_to_create = CreateTask(
+            task_type_title=task.task_type_title,
+            period=task.period,
+            deadline=new_deadline,
+            estimation=task.estimation,
+            description=task.description,
+            status_title=Statuses.IN_PROGRESS.value,
+            register_title=task.register_title,
+            title=task.title,
+        )
+        await create_task(cmd_to_create, uow)
 
 
 async def mark_task_as_frozen(
@@ -269,8 +292,11 @@ async def calculate_next_deadline(
         deadline: datetime.datetime,
         period: int,
 ):
+    start_deadline = deadline
     while deadline <= datetime.datetime.now():
         deadline += datetime.timedelta(days=period)
+    if start_deadline == deadline:
+        return deadline + datetime.timedelta(days=period)
     return deadline
 
 

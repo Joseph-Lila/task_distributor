@@ -40,6 +40,31 @@ class AiosqliteRepository(AbstractRepository):
             )
         return tasks
 
+    async def get_by_id(self, task_id) -> Optional[Task]:
+        cursor = await self.session.execute(
+            "SELECT tasks.id, tasks.title, tasks.deadline, tasks.period, tasks.place, tasks.description, "
+            "tasks.estimation, statuses.title, complexities.title, registers.title, task_types.title "
+            "FROM tasks INNER JOIN statuses "
+            "ON tasks.status_id = statuses.id "
+            "INNER JOIN complexities "
+            "ON tasks.complexity_id = complexities.id "
+            "INNER JOIN registers "
+            "ON tasks.register_id = registers.id "
+            "INNER JOIN task_types "
+            "ON tasks.task_type_id = task_types.id "
+            "WHERE tasks.id = ?;",
+            (task_id,)
+        )
+        task_row = await cursor.fetchone()
+        if task_row:
+            return Task(
+                item_id=task_row[0], title=task_row[1], deadline=parse(task_row[2]),
+                period=task_row[3], place=task_row[4], description=task_row[5],
+                estimation=task_row[6], status_title=task_row[7],
+                complexity_title=task_row[8], register_title=task_row[9],
+                task_type_title=task_row[10]
+            )
+
     async def get_tasks_by_type(self, status: str) -> List[Task]:
         cursor = await self.session.execute(
             "SELECT tasks.id, tasks.title, tasks.deadline, tasks.period, tasks.place, tasks.description, "
@@ -127,8 +152,13 @@ class AiosqliteRepository(AbstractRepository):
         )
         task_row = await cursor.fetchone()
         if task_row:
-            task_id = task_row[0]
-            return Task(*task_row)
+            return Task(
+                item_id=task_row[0], title=task_row[1], deadline=parse(task_row[2]),
+                period=task_row[3], place=task_row[4], description=task_row[5],
+                estimation=task_row[6], status_title=task_row[7],
+                complexity_title=task_row[8], register_title=task_row[9],
+                task_type_title=task_row[10]
+            )
 
     async def get_actual_task(self, current_task_place=None) -> Optional[Task]:
         if current_task_place is None:

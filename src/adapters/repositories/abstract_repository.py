@@ -11,6 +11,10 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    async def get_by_id(self, task_id) -> Optional[Task]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     async def get_tasks_by_type(self, status: str) -> List[Task]:
         raise NotImplementedError
 
