@@ -1,8 +1,6 @@
 import asyncio
 
-from kivymd.app import MDApp
 from kivy.utils import platform
-from src.entrypoints.kivy.screens import ScreenGenerator
 
 
 if platform == 'android':
@@ -13,6 +11,9 @@ if platform == 'android':
             Permission.WRITE_EXTERNAL_STORAGE,
         ]
     )
+
+from kivymd.app import MDApp
+from src.entrypoints.kivy.screens import ScreenGenerator
 
 
 class KivyApp(MDApp):
