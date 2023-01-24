@@ -9,9 +9,9 @@ from src.domain.commands.setup_tasks import SetupTasks
 from src.domain.entities.task_type import TaskTypes
 from src.domain.events.got_all_tasks import GotAllTasks
 from src.domain.events.got_main_task import GotMainTask
-from src.entrypoints.kivy.controllers.abstract_controller import (
+from src.entrypoints.kivy_gui.controllers.abstract_controller import (
     AbstractController, use_loop)
-from src.entrypoints.kivy.views.main_task_screen.main_task_screen import \
+from src.entrypoints.kivy_gui.views.main_task_screen.main_task_screen import \
     MainTaskScreenView
 
 

@@ -1,6 +1,6 @@
-from src.entrypoints.kivy.controllers.abstract_controller import \
+from src.entrypoints.kivy_gui.controllers.abstract_controller import \
     AbstractController
-from src.entrypoints.kivy.views.statistics_screen.statistics_screen import \
+from src.entrypoints.kivy_gui.views.statistics_screen.statistics_screen import \
     StatisticsScreenView
 
 

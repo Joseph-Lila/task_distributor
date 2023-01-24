@@ -1,6 +1,6 @@
-from src.entrypoints.kivy.controllers.abstract_controller import (
+from src.entrypoints.kivy_gui.controllers.abstract_controller import (
     AbstractController)
-from src.entrypoints.kivy.views.main_screen.main_screen import MainScreenView
+from src.entrypoints.kivy_gui.views.main_screen.main_screen import MainScreenView
 
 
 class MainScreenController(AbstractController):

@@ -1,6 +1,6 @@
-from src.entrypoints.kivy.controllers.abstract_controller import \
+from src.entrypoints.kivy_gui.controllers.abstract_controller import \
     AbstractController
-from src.entrypoints.kivy.views.settings_screen.settings_screen import \
+from src.entrypoints.kivy_gui.views.settings_screen.settings_screen import \
     SettingsScreenView
 
 

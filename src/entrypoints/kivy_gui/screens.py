@@ -1,8 +1,8 @@
 from src.bootstrap import bootstrap
-from src.entrypoints.kivy.controllers.main_screen import MainScreenController
-from src.entrypoints.kivy.controllers.main_task_screen import \
+from src.entrypoints.kivy_gui.controllers.main_screen import MainScreenController
+from src.entrypoints.kivy_gui.controllers.main_task_screen import \
     MainTaskScreenController
-from src.entrypoints.kivy.controllers.tasks_log_screen import \
+from src.entrypoints.kivy_gui.controllers.tasks_log_screen import \
     TasksLogScreenController
 
 SCREENS = {

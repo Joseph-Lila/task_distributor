@@ -13,7 +13,7 @@ if platform == 'android':
     )
 
 from kivymd.app import MDApp
-from src.entrypoints.kivy.screens import ScreenGenerator
+from src.entrypoints.kivy_gui.screens import ScreenGenerator
 
 
 class KivyApp(MDApp):
@@ -22,7 +22,7 @@ class KivyApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        from src.entrypoints.kivy.views.main import DateField, MyTextField
+        from src.entrypoints.kivy_gui.views.main import DateField, MyTextField
         self.load_all_kv_files(self.directory)
 
     def build(self):

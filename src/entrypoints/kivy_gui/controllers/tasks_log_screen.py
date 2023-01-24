@@ -9,9 +9,9 @@ from src.domain.entities.task import Task
 from src.domain.entities.task_type import TaskTypes
 from src.domain.events.task_is_created import TaskIsCreated
 from src.domain.events.task_is_edited import TaskIsEdited
-from src.entrypoints.kivy.controllers.abstract_controller import (
+from src.entrypoints.kivy_gui.controllers.abstract_controller import (
     AbstractController, use_loop)
-from src.entrypoints.kivy.views.tasks_log_screen.tasks_log_screen import \
+from src.entrypoints.kivy_gui.views.tasks_log_screen.tasks_log_screen import \
     TasksLogScreenView
 
 
