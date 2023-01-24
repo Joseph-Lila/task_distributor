@@ -101,13 +101,9 @@ async def create_tables():
     Method to prepare db file and build tables
     :return: None
     """
-    print('*' * 50)
-    print('create tables!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     if not check_db_file_exists():
-        print('not exists(((')
         with open(get_sqlite_connection_str(), 'w'):
             pass
-            print(get_sqlite_connection_str())
         async with aiosqlite.connect(get_sqlite_connection_str()) as db:
             for command in CREATE_CONSTRUCTIONS:
                 await db.execute(command)

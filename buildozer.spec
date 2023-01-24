@@ -4,10 +4,10 @@
 title = Task Distributor
 
 # (str) Package name
-package.name = myapp
+package.name = task_distributor
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.test
+package.domain = org.llk
 
 # (str) Source code where the main.py live
 source.dir = .

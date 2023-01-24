@@ -752,4 +752,3 @@ cython_debug/
 .buildozer
 *.jpeg
 *.png
-*.db
