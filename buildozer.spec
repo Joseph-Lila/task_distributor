@@ -19,7 +19,7 @@ source.include_exts = py,png,jpg,kv,atlas,db
 source.include_patterns = assets/*,src/*
 
 # (list) Source files to exclude (let empty to not exclude anything)
-#source.exclude_exts = spec,txt,bat,ini,md
+source.exclude_exts = spec,txt,bat,ini,md
 
 # (list) List of directory to exclude (let empty to not exclude anything)
 source.exclude_dirs = tests, bin, venv
@@ -37,7 +37,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.10.9,hostpython3==3.11.1,requests,aiosqlite==0.17.0,asyncgui==0.5.5,asynckivy==0.5.4,attrs==22.2.0,certifi==2022.12.7,charset-normalizer==3.0.1,colorama==0.4.6,docutils==0.19,exceptiongroup==1.1.0,idna==3.4,iniconfig==2.0.0,Kivy==2.1.0,kivy-deps.angle==0.3.3,kivy-deps.glew==0.3.1,kivy-deps.sdl2==0.4.5,Kivy-Garden==0.1.5,kivymd==1.1.1,loguru==0.6.0,packaging==23.0,Pillow==9.4.0,pluggy==1.0.0,Pygments==2.14.0,pypiwin32==223,python-dateutil==2.8.2,pywin32==305,requests==2.28.2,six==1.16.0,tomli==2.0.1,typing_extensions==4.4.0,urllib3==1.26.14,win32-setctime==1.1.0
+requirements = python3,sdl2_ttf,aiosqlite,asynckivy,Kivy==2.1.0,kivymd==1.1.1,loguru,pillow==9.2.0,certifi,jnius,charset_normalizer,idna,requests
 
 
 # (str) Custom source folders for requirements
@@ -96,7 +96,7 @@ fullscreen = 0
 
 # (list) Permissions
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
-#android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18)
+android.permissions = android.permission.READ_EXTERNAL_STORAGE, android.permission.WRITE_EXTERNAL_STORAGE
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
