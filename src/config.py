@@ -4,6 +4,9 @@ import pathlib
 THIS_DIR = pathlib.Path(__file__).parent.resolve().absolute()
 ROOT_DIR = THIS_DIR.parent
 
+for path in list(ROOT_DIR.rglob("*")):
+    print(path)
+
 
 def get_sqlite_connection_str():
     """
